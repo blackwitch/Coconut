@@ -1,0 +1,1091 @@
+<script src="plugins/map.js"></script>
+<script>
+	srv_info_list = [];
+	checked_srv_list = [];	//	initialize checked servers list
+	srv_group_list = [];	//	initialize group list
+	current_app_list = [];
+	var registed_app_list = new MAP();
+	flag_all_group = true;
+	myAuthKey = '';
+</script>
+
+<style>
+	.ui-dialog,.ui-widget, .ui-corner-all, .consoleDlg, .ui-draggable, .ui-resizable
+	.ui-widget-content{
+		background: #F9F9F9;
+		border: 1px solid #black;
+		color: #222222;
+	}
+	.ui-widget-header{
+		background: #4d4d4d;
+		border: 0;
+		color: #fff;
+		font-weight: normal;
+	}
+    input.text { margin-bottom:12px; width:95%; padding: .4em; color:black;}
+    fieldset { padding:0; border:0; margin-top:25px; }
+    h1 { font-size: 1.2em; margin: .6em 0; }
+    div#nick-dialog-form table { margin: 1em 0; border-collapse: collapse; width: 100%; }
+    div#nick-dialog-form table td, div#nick-dialog-form table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
+	.ui-dialog .ui-state-error { padding: .3em; }
+    .validateTips { border: 1px solid transparent; padding: 0.3em; }
+	.ui-widget-content-ex {
+	  border: 2px solid #ddd;
+	  background:white;
+	  color: #F00;
+	  width:auto !important;
+	  height:auto !important;
+	  padding : 0;
+	  margin: 0;
+	}
+	label {
+		font-weight: bold;
+		display: block;
+		width: 150px;
+		float: left;
+	}
+	.pathinputbox{
+		background:lightgray;
+		border-radius: 5px; 
+	}
+	#progressbar {
+		margin-top: 20px;
+	}
+ 
+	.progress-label {
+		font-weight: bold;
+		text-shadow: 1px 1px 0 #fff;
+	}
+ 
+	.ui-dialog-titlebar-close {
+		display: none;
+	}
+	.tooltip-content {
+	    position:absolute;
+	    bottom: 50px;
+	    left: 50px;
+	    height: auto;
+	    width: 100px;
+	    background:#2E3732;
+		color: #FFFFFF;
+	    display:none;
+		text-shadow: none;
+		z-index: 1000;
+		padding: 20px;
+		line-height: 19px;
+		text-align: justify;
+		opacity: 0.8;
+	}
+	.tooltip-target {
+	  display: block; /* required */
+	  position: relative; /* required */
+	}	
+</style>
+
+<div class="row">
+	<div id="breadcrumb" class="col-md-12">
+		<ol class="breadcrumb">
+			<li><a href="index.html">Home</a></li>
+			<li><a href="#">Control Box</a></li>
+		</ol>
+	</div>
+</div>
+		
+<div class="row">
+	<div class="col-xs-12">
+		<div class="box">
+			<div class="box-header">
+				<div class="box-name">
+					<i class="fa fa-terminal"></i>
+					<span>Terminal</span>
+				</div>
+				<div class="box-icons">
+					<a class="collapse-link">
+						<i class="fa fa-chevron-up"></i>
+					</a>
+					<a class="expand-link">
+						<i class="fa fa-expand"></i>
+					</a>
+					<a class="close-link">
+						<i class="fa fa-times"></i>
+					</a>
+				</div>
+				<div class="no-move"></div>
+			</div>
+			<div class="box-content no-padding">
+				<div id="Terminal" style="height: auto;min-height:150px;"></div>
+			</div>
+		</div>	
+	
+		<div class="box">
+			<div class="box-header">
+				<div class="box-name">
+					<i class="fa fa-group"></i>
+					<span>Control Groups</span>
+				</div>
+				<div class="box-icons">
+					<a class="collapse-link">
+						<i class="fa fa-chevron-up"></i>
+					</a>
+					<a class="expand-link">
+						<i class="fa fa-expand"></i>
+					</a>
+					<a class="close-link">
+						<i class="fa fa-times"></i>
+					</a>
+				</div>
+				<div class="no-move"></div>
+			</div>
+			<div class="box-content no-padding">
+				<table><tr>
+				<td width="200" valign="top"><form><select id="srv_group_select"><option>empty</option></select></form></td><td width="30"></td>
+				<td>
+				<button id="btn-command-srvgroupsel" type="button" class="btn btn-primary btn-xs btn-label-left"><span><i class="fa fa-check"></i></span> Server Group Select</button>
+				<button id="btn-command-srvallsel" type="button" class="btn btn-success btn-xs btn-label-left"><span><i class="fa fa-toggle-on"></i></span> Select All </button>
+				<button id="btn-command-srvallunsel" type="button" class="btn btn-danger btn-xs btn-label-left"><span><i class="fa fa-toggle-off"></i></span> Unselect All </button>
+				<button id="btn-command-srvviewselected" type="button" class="btn btn-info btn-xs btn-label-left"><span><i class="fa fa-sort-alpha-asc"></i></span> View Selected Groups</button>
+				<button id="btn-command-srvviewall" type="button" class="btn btn-info btn-xs btn-label-left"><span><i class="fa fa-sort-alpha-asc"></i></span> View All Groups</button>
+				</td>
+				</tr></table>
+			</div>
+		</div>
+		
+		<div class="box">
+			<div class="box-header">
+				<div class="box-name">
+					<i class="fa fa-desktop"></i>
+					<span>Applications</span>
+				</div>
+				<div class="box-icons">
+					<a class="collapse-link">
+						<i class="fa fa-chevron-up"></i>
+					</a>
+					<a class="expand-link">
+						<i class="fa fa-expand"></i>
+					</a>
+					<a class="close-link">
+						<i class="fa fa-times"></i>
+					</a>
+				</div>
+				<div class="no-move"></div>
+			</div>
+			<div class="box-content no-padding">
+				<table><tr>
+				<td width="200" valign="top">
+					<form><select id="srv_app_select"><option>empty</option></select></form>
+					<span id="app_server_ip"> </span><br>
+					<span id="app_regist"></span><br>
+					<span id="app_args"></span><br>
+					
+					</td><td width="30"></td>
+				<td>
+					<div> <label>target Path :</label> <input id="target_path" class="pathinputbox"> </div>
+					<div> <label>Distribution Repo :</label> <input id="dist_path" class="pathinputbox"> <button id="btn-patch" type="button" class="btn btn-info btn-xs btn-label-left"><span><i class="fa fa-cloud-download"></i></span> Patch</button></div>
+					<div> <label>Upload File :</label> <input type="file" id="file_path" class="pathinputbox" readonly> <button id="btn-upload-file" type="button" class="btn btn-info btn-xs btn-label-left"><span><i class="fa fa-upload"></i></span> Upload</button>
+					</div>
+					<div>
+					<button id="btn-start" type="button" class="btn btn-danger btn-xs btn-label-left"><span><i class="fa fa-play"></i></span> Start </button>
+					<button id="btn-stop" type="button" class="btn btn-danger btn-xs btn-label-left"><span><i class="fa fa-stop"></i></span> Stop </button>
+					<button id="btn-restart" type="button" class="btn btn-danger btn-xs btn-label-left"><span><i class="fa fa-play-circle"></i></span> Restart </button>
+					</div>
+				</td>
+				</tr></table>
+			</div>
+		</div>	
+		
+		<div class="box">
+			<div class="box-header">
+				<div class="box-name">
+					<i class="fa fa-th-list"></i>
+					<span>Server List</span>
+				</div>
+				<div class="box-icons">
+					<a class="collapse-link">
+						<i class="fa fa-chevron-up"></i>
+					</a>
+					<a class="expand-link">
+						<i class="fa fa-expand"></i>
+					</a>
+					<a class="close-link">
+						<i class="fa fa-times"></i>
+					</a>
+				</div>
+				<div class="no-move"></div>
+			</div>
+			<div class="box-content no-padding">
+				<div id="dashboard-servers" class="row" style="visibility: visible; position: relative;">
+					<div id="srvListGrid"> </div>
+					<div class="clearfix"></div>
+				</div>
+			</div>
+		</div>		
+	</div>
+</div>
+
+<div style="height: 40px;"></div>
+<div id="nick-dialog-form" title="Change!!"  style="display:none;" class="ui-dialog-content ui-widget-content-ex">
+  <form>
+    <fieldset>
+      <label for="newNick">Input</label>
+      <input type="text" name="newNick" id="newNick" value="" class="text ui-widget-content-ex ui-corner-all">
+ 
+      <!-- Allow form submission with keyboard without duplicating the dialog button -->
+      <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+    </fieldset>
+  </form>
+</div>
+
+<div id="dialog" title="Patching...">
+  <div class="progress-label">Starting download...</div>
+  <div id="progressbar"></div>
+</div>
+
+<script>
+var ipManager = "172.31.5.12";
+var ipFileUpload ="http://" + ipManager + ":5060" ;
+var ipAPI ="http://" + ipManager + ":8443";
+var ipTerminal = "http://" + ipManager + ":5070";
+
+var target_path_list = [	//자주 사용하는 경로는 이곳에 미리 넣어두셔도 됩니다. 추후 이 정보는 redis에 저장되도록 할 예정입니다.
+  "/var",
+  "/home"
+];
+$( "#target_path" ).autocomplete({
+  source: target_path_list
+});
+var dist_path_list = [	//자주 사용하는 경로는 이곳에 미리 넣어두셔도 됩니다. 추후 이 정보는 redis에 저장되도록 할 예정입니다.
+  "ftp://localhost",
+  "http://localhost"
+];
+$( "#dist_path" ).autocomplete({
+  source: dist_path_list
+});
+
+
+
+
+function getIPFromUUID(_uuid){
+	var idx = _uuid.indexOf('IP_');
+	if(idx === -1)
+		return 'no_ip';
+	
+	return _uuid.substring(idx+3, _uuid.length);
+}
+
+function AllTables(){
+	LoadSelect2Script(MakeSelect2);
+}
+function MakeSelect2(){
+	//$('select').select2();
+	$('.dataTables_filter').each(function(){
+		$(this).find('label input[type=text]').attr('placeholder', 'Search');
+	});
+}
+
+function getSrvList() {
+	//srvUUIDList = [];
+	//cpuLoadValue = 0;
+ 	$.post(ipAPI+"/srv_list").done(function(res) {
+		srvUUIDList = res;
+		for(var i = 0;i< srvUUIDList.length; i++)
+			srv_info_list.push(' ');
+		srv_info_list.push(0);
+			
+		for(var i = 0;i< srvUUIDList.length; i++)
+		{
+			getSrvInfo(i, srvUUIDList[i] );
+		}
+	});
+}
+
+function getSrvInfo( arrayIdx, _uid ) {
+	$.post(ipAPI+"/srv_info", {'uid':_uid, 'arrIdx':arrayIdx}).done(function(res) {
+		if(res.info.length > 0){
+			if( srv_group_list.indexOf(res.info[5]) == -1)
+				srv_group_list.push(res.info[5]);
+			addSrvInfo(res.arrIdx, res.info);
+		}
+	});
+}
+</script>
+
+
+<script type="text/javascript">
+
+$(".tooltip-target").mouseenter(function(e){
+    e.preventDefault();
+    $(this).children(".tooltip-content").fadeIn("slow");
+});
+$(".tooltip-target").mouseleave(function(e){
+    e.preventDefault();
+    $(this).children(".tooltip-content").fadeOut("fast");
+});
+
+function RedrawCPULoad(elem){
+	var post_data = {
+		'uid': srvUUIDList[ arguments[1] ],
+		'arrIdx' : arguments[1]
+	};
+
+	$.post(ipAPI+"/srv_getrtinfo", post_data).done(function(res) {
+		var knob_elem = $("#knob-srv-" + res.arrIdx);
+		
+		var apps = res.apps.split(',');
+		var tFlag = false;
+		document.getElementById('srvgrid_help_'+res.uid).innerHTML = '';
+		for(var i=0;i< apps.length;i++){
+			var arr = apps[i].split('|');
+			if(arr[2] == '0'){
+				tFlag = true;
+				document.getElementById('srvgrid_help_'+res.uid).innerHTML += arr[0]+' '+arr[1] +'<br>';
+			}
+		}
+
+		if(tFlag == true){
+			document.getElementById('srvgrid_' + res.uid).style.backgroundColor = "red";
+			document.getElementById('srvgrid_help_'+res.uid).innerHTML = 'check this!! <br>' + document.getElementById('srvgrid_help_'+res.uid).innerHTML;
+		}else{
+			document.getElementById('srvgrid_' + res.uid).style.backgroundColor = "white";
+		}
+
+		knob_elem.animate({
+			value: res.cpuload
+		},{
+			duration: 5000,
+			easing:'swing',
+			progress: function()
+			{
+				$(this).val( parseInt(Math.ceil(this.value)) ).trigger('change');
+			}
+		});
+	});
+}
+
+function DrawCPULoad(){
+	var srv_monitoring_list = [];
+	for(var i=0; i<srv_info_list.length-1; i++ )
+	{
+		srv_monitoring_list.push($('#knob-srv-' + i));
+	}
+
+	//	When using 'srv_info_list', it just draw last knob. I dont know the why. :(
+	srv_monitoring_list.forEach(DrawKnob);
+	setInterval(function(){
+		srv_monitoring_list.forEach(RedrawCPULoad);
+	}, 10000);
+}
+
+function UpdateGroupList(){
+	var divSrvGroupListCmb = '';
+	for(var i=0;i<srv_group_list.length;i++)
+		divSrvGroupListCmb += '<option value=\"'+i+'\">'+srv_group_list[i]+'</option>';
+	$("#srv_group_select").find('option').remove().end().append(divSrvGroupListCmb);
+}
+
+function addSrvInfo(idx, _info){
+
+	srv_info_list[idx]= _info;
+	srv_info_list[srv_info_list.length-1] ++ ;
+
+	if( srv_info_list[srv_info_list.length-1] == srvUUIDList.length)
+	{
+		updateServerCard();
+		UpdateGroupList();
+	}
+}
+
+function remServer(_elemid){
+
+	var uid = _elemid.replace('remove_','');
+	var arrIdx = srvUUIDList.indexOf(uid);
+	var post_data = {
+		'uid': uid,
+		'arrIdx' : arrIdx
+	};
+
+	$.post(ipAPI+"/srv_remove", post_data).done(function(res) {
+		
+		//	관리하는 리스트에서 삭제
+		var index = srvUUIDList.indexOf(res.uid);
+		if(index > -1)
+		{
+			srvUUIDList.splice(index , 1);
+			srv_info_list.splice(index, 1);
+		}
+		var idx = checked_srv_list.indexOf(res.uid);
+		if(idx > -1)
+		{
+			checked_srv_list.splice(idx , 1);
+		}
+		
+		//	페이지 다시 구축
+		updateServerCard();
+	});
+}
+
+function updateServerCard(){
+	
+	var divSrvGrid = '';
+	var group = $('#srv_group_select :selected').text();
+	srv_group_list =[];
+	for(var i=0;i<srv_info_list.length-1;i++){
+		var info = srv_info_list[i];
+		var knob_name = "knob-srv-" + i;
+		if( srv_group_list.indexOf(info[5]) == -1)
+			srv_group_list.push(info[5]);
+			
+		if(flag_all_group == false && group != info[5])
+			continue;
+		
+		divSrvGrid += 	 '<div id="srvgrid_' + srvUUIDList[i] + '" class="col-xs-12 col-sm-6 col-md-4 ow-server roundedcorners">';
+		divSrvGrid +=    '	<h4 class="page-header text-right">';
+		if (info[1].indexOf("Win") >= 0)
+			divSrvGrid +='<i class="fa fa-windows"></i>';
+		else if (info[1].indexOf("Linux") >= 0)
+			divSrvGrid +='<i class="fa fa-linux"></i>';
+		divSrvGrid +=    '<span id="group_'+srvUUIDList[i]+'">'+info[5]+'</span> / <span id="nick_'+srvUUIDList[i]+'">'+info[4]+'</span> <input type="checkbox" id="chk_srvgrid_'+srvUUIDList[i]+'"> </h4> ';
+		divSrvGrid +=    '	<small>' + info[0] + '</small>';
+		divSrvGrid +=    '	<div class="ow-settings">';
+		divSrvGrid +=    '			<a href="#" class="dropdown-toggle console" data-toggle="dropdown"><i class="fa fa-gears"></i></a>';
+		divSrvGrid +=    '			<ul class="dropdown-menu">';
+		divSrvGrid +=    '				<li><a href="#">';
+		divSrvGrid +=    '						<i class="fa fa-folder"></i>';
+		divSrvGrid +=    '						<span id="appGet_'+srvUUIDList[i]+'">Get Apps</span>';
+		divSrvGrid +=    '				</a></li>';
+		divSrvGrid +=    '				<li><a href="#">';
+		divSrvGrid +=    '						<i class="fa fa-folder"></i>';
+		divSrvGrid +=    '						<span id="remove_'+srvUUIDList[i]+'">Delete</span>';
+		divSrvGrid +=    '				</a></li>';
+		divSrvGrid +=    '			</ul>';
+		divSrvGrid +=    '	</div>';
+		divSrvGrid +=    '	<div class="row ow-server-bottom">';
+		divSrvGrid +=    '		<div class="col-sm-4">';
+		divSrvGrid +=    '			<div class="knob-slider">';
+		divSrvGrid +=    '				<input id="'+knob_name+ '" class="knob" data-width="60" data-height="60" data-angleOffset="180" data-fgColor="#6AA6D6" data-skin="tron" data-thickness=".2" value=""><br>CPU Load';
+		divSrvGrid +=    '			</div>';
+		divSrvGrid +=    '		</div>';
+		divSrvGrid +=    '		<div class="col-sm-8">';
+		divSrvGrid +=    '			<div class="row"><i class="fa fa-map-marker"></i> ' + getIPFromUUID(srvUUIDList[i]) +'</div>';
+		divSrvGrid +=    '			<div class="row">';
+		if (info[1].indexOf("Win") >= 0)
+			divSrvGrid +='<i class="fa fa-windows"></i>';
+		else if (info[1].indexOf("Linux") >= 0)
+			divSrvGrid +='<i class="fa fa-linux"></i>';
+		divSrvGrid +=    ' ' + info[1]+'</div>';
+		divSrvGrid +=    '			<div class="row"><i class="fa fa-bolt"></i> Uptime : ' + Math.round((info[6]/24/60/60)*10)/10 + 'days </div>';
+		divSrvGrid +=    '			<div class="row"><i class="fa fa-user"></i> Mem    : ' +  Math.round((info[7]*100)/info[2]) + '% </div>';
+		divSrvGrid +=    '			<div id="srvgrid_help_'+ srvUUIDList[i]+'"class="row"></div>';
+		divSrvGrid +=    '		</div>';
+		divSrvGrid +=    '	</div>';
+		divSrvGrid +=    '</div>';
+	}
+	document.getElementById("srvListGrid").innerHTML = divSrvGrid;	
+	
+	LoadKnobScripts(DrawCPULoad);
+}
+
+function update_app_list(_uuid, _list){
+	if(current_app_list.lenght == 0 && _list == null){
+		console.log('Can not make app list');
+		return;
+	}
+	//	실행 중인 리스트를 우선 리스트에 업데이트 한다.
+	{
+		var appListCmb = '';
+		for(var i=0;i<current_app_list.length; i++){
+			var title = 'pid;' + current_app_list[i].pid + ';' + current_app_list[i].command;
+			var args = '';
+			for(var a=0;a<current_app_list[i].arguments.length-1;a++)
+			{
+				if(a != 0)	args += ' ';	
+				args += current_app_list[i].arguments[a];
+			}
+			appListCmb += '<option value="'+title+'|'+args+'">'+title+'</option>';
+		}
+	}
+	//	기존에 정리된 리스트와 비교하여 지금은 없는 리스트를 끼워 넣는다.
+	if(_list != "undefined" && _list.length > 0){
+		for(var i=0;i<_list.length; i++){
+			var valueArray = _list[i].split('|');
+			registed_app_list.put(_list[i], 1);
+			var c=0;
+			for(;c<current_app_list.length; c++){
+				var args = '';
+				for(var a=0;a<current_app_list[c].arguments.length-1;a++)
+				{
+					if(a != 0)	args += ' ';	
+					args += current_app_list[c].arguments[a];
+				}
+				if(	current_app_list[c].command == valueArray[0] && args == valueArray[1])
+					break;
+			}
+			if(c == current_app_list.length){
+				var title = 'pid;0000;' + valueArray[0];
+				appListCmb += '<option value="'+title+'|'+valueArray[1]+'">'+title+'</option>';
+			}
+		}
+	}else
+		registed_app_list.clear();
+
+	// 첫번째 요소를 자동으로 선택하게 한다.
+	// var str = $( "#srv_app_select option:selected" ).val();	
+	
+	$('#srv_app_select').find('option').remove().end().append(appListCmb);
+	$('#app_server_ip').html(_uuid);
+	//	가동되지 않은 상태에서 비등록으로 바꾸면 바로 리스트에서 삭제한다.
+}
+
+function triggerAppManagingFlag(_cmbValue){
+	if(_cmbValue === undefined)
+		return;
+	console.log( _cmbValue );
+	var dataArray = _cmbValue.split('|');
+	if(dataArray.length < 1)
+		return;
+	var cmd = dataArray[0].split(';')[2];
+	console.log( 'cmds : ' + dataArray[0].split(';').length );
+	var args = dataArray[1];
+	if(args == undefined)
+		args = '';
+	
+	// db 처리 - 정보 전체를 다시 전달한다.
+	var post_data  = {}
+	var mapKey = cmd+ '|' + args;
+	//mapKey.replace(/(^\s*)|(\s*$)/gi, "");	//	trim
+	//console.log('mapKey >> [' + mapKey + ']');
+	var uid = $('#app_server_ip').text();
+	if( registed_app_list.get(mapKey) ){
+		registed_app_list.remove(mapKey);
+		post_data  = { 
+			'uid' : uid,
+			'list' : registed_app_list.keys()
+		};
+		$('#app_regist').html('Registed Flag : <i class="fa fa-toggle-off"></i>');
+	}else{
+		console.log( 'add registed_app_list >> ' + mapKey);
+		registed_app_list.put(mapKey, 1);
+		post_data  = { 
+			'uid' : uid,
+			'list' : registed_app_list.keys()
+		};
+		$('#app_regist').html('Registed Flag : <i class="fa fa-toggle-on"></i>');
+	}
+	console.log( 'data >> ' + post_data.uid + ',' + post_data.list);
+	$.post(ipAPI+"/srv_regist_app_update",post_data).done(function(res){
+		if(res.error)
+			console.log(res.error);
+	});
+	updateSSSButton();
+}
+
+function updateSSSButton(){
+	var str = $( "#srv_app_select option:selected" ).val();
+	
+	//	등록 관리 여부
+	var dataArray = str.split('|');
+	var cmd = dataArray[0].split(';')[2];
+	var pid = dataArray[0].split(';')[1];
+	var args = dataArray[1];
+	var mapKey = cmd+ '|' + args;
+
+	if( registed_app_list.get(mapKey) ){
+		$('#app_regist').html('Registed Flag : <i class="fa fa-toggle-on"></i>');
+		if(pid == '0000'){
+			$('#btn-start').removeAttr('disabled');
+			$('#btn-stop').attr('disabled', true);
+			$('#btn-restart').attr('disabled', true);
+		}else{
+			$('#btn-start').attr('disabled', true);
+			$('#btn-stop').removeAttr('disabled');
+			$('#btn-restart').removeAttr('disabled');
+		}
+	}else{
+		$('#app_regist').html('Registed Flag : <i class="fa fa-toggle-off"></i>');
+		$('#btn-start').attr('disabled', true);
+		$('#btn-stop').attr('disabled', true);
+		$('#btn-restart').attr('disabled', true);
+	}
+
+	//	지정된 파라미터들
+	var args = str.split('|');
+	var argsText = 'Args >> ';
+	for(var i=1;i<args.length;i++)
+		argsText+= args[i] + ' ';
+	$('#app_args').html( argsText);
+}
+
+function doControlApp(_elemid){
+	var dialog;
+	var uuid = _elemid.replace('appGet_', '');
+	var ip = getIPFromUUID(uuid);
+	var post_data  = { 
+		'ip' : ip
+	};
+	console.log( 'request ps list of ' + ip);
+	$.post(ipAPI+"/srv_ps_list",post_data).done(function(res) {
+		current_app_list = res;
+		var post_data_forInfoList = {
+			'uid': uuid
+		};
+		$.post(ipAPI+"/srv_registed_app_list", post_data_forInfoList).done(function(res){
+			if(res.error){
+				console.log(res.error);
+				update_app_list(null, null);
+			}else{
+				if(uuid == res.uid){
+					update_app_list(res.uid, res.list);
+				}else{
+					console.log('Did you select unother server??');
+				}
+			}
+		});
+	});
+}
+
+function doChangeNick(_elemid){
+    var dialog, form,
+	    nick = $("#newNick"),
+		allFields = $( [] ).add( nick ),
+		tips = $( ".validateTips" );
+	function updateTips( t ) {
+      tips
+        .text( t )
+        .addClass( "ui-state-highlight" );
+      setTimeout(function() {
+        tips.removeClass( "ui-state-highlight", 1500 );
+      }, 500 );
+    }
+	
+	function checkLength( o, n, min, max ) {
+      if ( o.val().length > max || o.val().length < min ) {
+        o.addClass( "ui-state-error" );
+        updateTips( "Length of " + n + " must be between " +
+          min + " and " + max + "." );
+        return false;
+      } else {
+        return true;
+      }
+    }
+	
+	function changeNick() {
+		var valid = true;
+		allFields.removeClass( "ui-state-error" );
+		valid = valid && checkLength( nick, "nick", 3, 16 );
+		if ( valid ) {
+			//	do something
+			var _id ='';
+			if(_elemid.indexOf('group_') >= 0)
+				_id = _elemid.replace('group_', '');
+			else 
+				_id = _elemid.replace('nick_', '');
+				
+			var post_data = {
+				'uid': _id,
+				'nick': nick.val()
+			};
+			if(_elemid.indexOf('group_') >= 0){
+				$.post(ipAPI+"/front_modify_group", post_data).done(function(res) {
+					document.getElementById(_elemid).innerHTML = res.newnick;
+					dialog.dialog( "close" );
+				});			
+			}else{
+				$.post(ipAPI+"/front_modify_nick", post_data).done(function(res) {
+					document.getElementById(_elemid).innerHTML = res.newnick;
+					dialog.dialog( "close" );
+				});			
+			}
+		}
+		return valid;	//	change name immediately
+    }
+	
+	dialog = $( "#nick-dialog-form" ).dialog({
+	  autoOpen: false,
+	  height: 200,
+	  width: 300,
+	  modal: true,
+	  show: {
+		effect: "slide",
+		duration: 500
+	  },
+      hide: {
+        effect: "slide",
+        duration: 500
+      },
+      buttons: {
+        "Apply": changeNick,
+        Cancel: function() {
+          dialog.dialog( "close" );
+        }
+      },
+      close: function() {
+        form[ 0 ].reset();
+        allFields.removeClass( "ui-state-error" );
+      }
+    });
+ 
+    form = dialog.find( "form" ).on( "submit", function( event ) {
+      event.preventDefault();
+      changeNick();
+    });
+	
+	dialog.dialog("open");
+}
+
+$(document).on('click',function(evt){
+	var elemId = evt.target.id;
+	if( elemId.indexOf('chk_srvgrid_') >= 0){
+	/////////////////////////////////////////
+	//	select/ unselect server
+		var _uid = elemId.replace('chk_srvgrid_', '');
+		elemId = elemId.replace('chk_', '');
+		
+		var checkbox = document.getElementById(evt.target.id);
+		if(checkbox.checked)
+		{
+			document.getElementById(elemId).style.backgroundColor = "#8AB6F6";
+			if(checked_srv_list.indexOf(_uid) === -1)
+			{
+				checked_srv_list.push(_uid);
+			}
+		}else {
+			document.getElementById(elemId).style.backgroundColor = "white";
+			var index = checked_srv_list.indexOf(_uid);
+			if(index > -1)
+				checked_srv_list.splice(index , 1);
+		}
+	}else if(elemId.indexOf('nick_') >= 0){
+	/////////////////////////////////////////
+	//	change nick name
+		doChangeNick(elemId);
+	}else if(elemId.indexOf('group_') >= 0){
+	/////////////////////////////////////////
+	//	change group name
+		doChangeNick(elemId);
+	}else if(elemId.indexOf('appGet_')>=0){
+		doControlApp(elemId,0);
+	}else if(elemId.indexOf('remove_')>=0){
+		remServer(elemId);
+	}else if(elemId.indexOf('app_regist')>=0){
+		var str = $( "#srv_app_select option:selected" ).val();
+		//	등록된 상태인지.
+		triggerAppManagingFlag(str);
+	}
+});
+
+$(document).ready(function() {
+	$(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+	$('#srv_app_select').css('width','300px');
+	getSrvList();
+	AllTables();
+	// Make all JS-activity for dashboard
+	DashboardTabChecker();
+	// Add Drag-n-Drop feature
+	WinMove();
+	
+	{
+		$('#Terminal').terminal(ipTerminal, {
+			login: true,
+			greetings: "Welcome RS2M Control Server"});	
+	}
+	
+	
+	$('#btn-command-srvgroupsel').click(function(){
+		var group = $('#srv_group_select :selected').text();
+		checked_srv_list = [];
+		for(var i=0; i<srvUUIDList.length; i++ ){
+			if(group != srv_info_list[i][5])
+				continue;
+			checked_srv_list.push( srvUUIDList[i] );
+			
+			var chkelemId = 'chk_srvgrid_'+srvUUIDList[i];
+			document.getElementById(chkelemId).checked = true;
+			var elemId = 'srvgrid_'+srvUUIDList[i];
+			document.getElementById(elemId).style.backgroundColor = "#8AB6F6";
+		}
+	});
+	
+	$('#btn-command-srvallsel').click(function(){
+		checked_srv_list = [];
+		for(var i=0; i<srvUUIDList.length; i++ ){
+
+			checked_srv_list.push( srvUUIDList[i] );
+			var chkelemId = 'chk_srvgrid_'+srvUUIDList[i];
+			document.getElementById(chkelemId).checked = true;
+			var elemId = 'srvgrid_'+srvUUIDList[i];
+			document.getElementById(elemId).style.backgroundColor = "#8AB6F6";
+		}
+	});
+	
+	$('#btn-command-srvallunsel').click(function(){
+		checked_srv_list = [];
+		for(var i=0; i<srvUUIDList.length; i++ ){
+			var chkelemId = 'chk_srvgrid_'+srvUUIDList[i];
+			document.getElementById(chkelemId).checked = false;
+			var elemId = 'srvgrid_'+srvUUIDList[i];
+			document.getElementById(elemId).style.backgroundColor = "white";
+		}
+	});
+	
+	$('#btn-command-srvviewselected').click(function(){
+		flag_all_group = false;
+		updateServerCard();
+	});
+
+	$('#btn-command-srvviewall').click(function(){
+		flag_all_group = true;
+		updateServerCard();
+	});
+
+	$('#btn-start').click(function(){
+		var str = $( "#srv_app_select option:selected" ).val();
+		var dataArray = str.split('|');
+		var cmd = dataArray[0].split(';')[2];
+		var pid = dataArray[0].split(';')[1];
+		var args = dataArray[1];
+		var mapKey = cmd+ '|' + args;
+		
+		if( registed_app_list.get(mapKey) && pid == '0000'){
+			//	시작 요청
+			var uid = $('#app_server_ip').text();
+			var ip = getIPFromUUID(uid);
+			var post_data = {
+				'ip' : ip,
+				'cmd' : cmd,
+				'args': args
+		  	};
+
+	  		$.post(ipAPI+"/app_start", post_data).done(function(res) {
+	  			console.log( res.ret );
+			});
+		}else{
+			if(pid !='0000')
+				console.log('This is running.');
+			else
+				console.log('This is not an app to regist for managing.');
+		}
+	});
+	$('#btn-stop').click(function(){
+		var str = $( "#srv_app_select option:selected" ).val();
+		var dataArray = str.split('|');
+		var cmd = dataArray[0].split(';')[2];
+		var pid = dataArray[0].split(';')[1];
+		var args = dataArray[1];
+		var mapKey = cmd+ '|' + args;
+		
+		if( registed_app_list.get(mapKey) && pid != '0000'){
+			//	중단 요청
+			var uid = $('#app_server_ip').text();
+			var ip = getIPFromUUID(uid);
+			var post_data = {
+				'ip' : ip,
+				'pid' : pid
+		  	};
+	  		$.post(ipAPI+"/app_stop", post_data).done(function(res) {
+	  			console.log( res.ret );
+			});
+		}else{
+			if(pid =='0000')
+				console.log('This is not running.');
+			else
+				console.log('This is not an app to regist for managing.');
+		}
+	});
+	$('#btn-restart').click(function(){
+		var str = $( "#srv_app_select option:selected" ).val();
+		var dataArray = str.split('|');
+		var cmd = dataArray[0].split(';')[2];
+		var pid = dataArray[0].split(';')[1];
+		var args = dataArray[1];
+		var mapKey = cmd+ '|' + args;
+		
+		if( registed_app_list.get(mapKey) && pid != '0000'){
+			//	재시작 요청
+			var uid = $('#app_server_ip').text();
+			var ip = getIPFromUUID(uid);
+			var post_data = {
+				'ip' : ip,
+				'pid': pid,
+				'cmd' : cmd,
+				'args': args
+		  	};
+
+	  		$.post(ipAPI+"/app_restart", post_data).done(function(res) {
+	  			console.log( res.ret );
+			});
+		}else{
+			if(pid =='0000')
+				console.log('This is not running.');
+			else
+				console.log('This is not an app to regist for managing.');
+		}
+	});
+
+	$('#srv_app_select').change(function(){
+		updateSSSButton();
+	});
+
+	//	progress bar sample
+	var progressTimer,
+	    AllSize = 100,
+		UploadedSize = 0,
+      progressbar = $( "#progressbar" ),
+      progressLabel = $( ".progress-label" ),
+      dialogButtons = [{
+        text: "Cancel Download",
+        click: closeDownload
+      }],
+	  dialog = $( "#dialog" ).dialog({
+        autoOpen: false,
+        closeOnEscape: false,
+        resizable: false,
+        buttons: dialogButtons,
+        open: function() {
+          progressTimer = setTimeout( progress, 2000 );
+        },
+        beforeClose: function() {
+          downloadButton.button( "option", {
+            disabled: false,
+            label: "Start Download"
+          });
+          uploadButton.button( "option", {
+            disabled: false,
+            label: "Start Upload"
+          });
+        }
+      }),
+      downloadButton = $( "#btn-patch" )
+        .button()
+        .on( "click", function() {
+          $( this ).button( "option", {
+            disabled: true,
+            label: "Downloading..."
+          });
+		  
+		  var tarpath = $('#target_path').val();
+		  var distpath = $('#dist_path').val();
+		  if(distpath === ''){
+			console.log('set distribution Repository or target path!');
+			return;
+		  }
+		  if(tarpath === '') tarpath = './';
+		  if(checked_srv_list.length == 0)
+		  {
+			console.log(' no selected server');
+			return;
+		  }
+		  var post_data = {
+			'target_path' : tarpath,
+			'dist_repo_path' : distpath,
+			'servers' : checked_srv_list
+		  };
+		  console.log(post_data);
+
+  		  $.post(ipAPI+"/dist_repo_update", post_data).done(function(res) {
+			if(res.error===undefined || res.error != 0){
+				console.log( 'patch error : ');
+				//	remember error list and show admin this problem
+			}
+		  });
+          dialog.dialog( "open" );
+      }),
+	  uploadButton = $('#btn-upload-file')
+	    .button()
+	    .on("click",function(){
+			$( this ).button( "option", {
+				disabled: true,
+				label: "Uploading..."
+			});
+			//get input box value // path and local file name
+			var tarpath = $('#target_path').val(), fn =$("input[type=file]")[0].files[0];
+			var tmppath = URL.createObjectURL(fn);
+			if(fn === undefined){
+				console.log('select file...' );
+				return;
+			}
+			if(tarpath === '')	  	tarpath = './';
+
+			var fileSize = fn.size/1024/1024;
+			if(fileSize >= 50){
+				console.log('Too big!! limit size 10M');
+				return;
+			}
+			//	check count of selected server count
+			if(checked_srv_list.length == 0)
+			{
+				console.log(' no selected server');
+				return;
+			}
+
+			//	at first, send server list.
+			var post_data = {
+				'target_path' : tarpath,
+				'servers' : checked_srv_list
+			};
+
+	  		$.post(ipAPI+"/file_upload", post_data).done(function(res) {
+				if(res.error===undefined || res.error != 0){
+					console.log( 'patch error : ');
+					//	remember error list and show admin this problem
+				}else{
+					$( "#dialog" ).dialog('open');
+					//	connect ft server to mng, and next, the mng will send this file to the servers that you selected.
+					AllSize = fn.size;
+					UploadedSize = 0;
+					var socket = io.connect(ipFileUpload);
+					var stream = ss.createStream();
+					ss(socket).emit('file', stream, {path: tarpath, name: fn.name, size: fn.size});
+					var blobstream = ss.createBlobReadStream(fn);
+					blobstream.on('data',function(chunk){
+						UploadedSize += chunk.length;
+						if(UploadedSize >= AllSize)
+						{
+							socket.emit('done', {path: tarpath, name: fn.name, size: fn.size});
+						}
+					});
+					blobstream.pipe( stream );
+				}
+			});
+	    });
+
+      progressbar.progressbar({
+		value: false,
+		change: function() {
+			progressLabel.text( "Current Progress: " + progressbar.progressbar( "value" ) + "%" );
+		},
+		complete: function() {
+			progressLabel.text( "Complete!" );
+			dialog.dialog( "option", "buttons", [{
+			text: "Close",
+			click: closeDownload
+			}]);
+			$(".ui-dialog button").last().focus();
+		}
+      });
+
+    function progress() {
+      //var val = progressbar.progressbar( "value" ) || 0;
+	  //console.log('progress value : ' + val);
+	  	if(UploadedSize < AllSize)
+	    	progressTimer = setTimeout( progress, 50 );
+      	if(UploadedSize >= AllSize)
+			UploadedSize = AllSize;
+		var  val = Math.floor((UploadedSize* 100) / AllSize );
+		console.log( 'progress val = ' + val);
+	  	progressbar.progressbar( "value", val );
+    }
+
+    function closeDownload() {
+      clearTimeout( progressTimer );
+      dialog
+        .dialog( "option", "buttons", dialogButtons )
+        .dialog( "close" );
+      progressbar.progressbar( "value", false );
+      progressLabel
+        .text( "Starting download..." );
+      downloadButton.focus();
+	  uploadButton.focus();
+	  UploadedSize = 0;
+	  AllSize = 100;
+    }
+});
+</script>

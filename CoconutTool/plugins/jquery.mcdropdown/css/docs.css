@@ -1,0 +1,23 @@
+/*
+ * this style is used for the Giva documentation only, mostly to override bootstrap items
+ */
+body {
+	margin-left: 8px;
+}
+
+label {
+	display: inline;
+}
+
+blockquote, .codeblock {
+	border: 1px solid #08084d;
+	background-color: #f2f2ff;
+	margin: 20px;
+	padding: 10px;
+}
+
+blockquote strong {
+	color: #08084d;
+}
+
+

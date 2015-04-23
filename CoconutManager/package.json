@@ -1,0 +1,25 @@
+{
+  "name": "CoconutManager",
+  "description": "A Tool for managing service systems",
+  "version": "0.0.1",
+  "dependencies": {
+    "body-parser": "~1.0.0",
+    "express": "4.4.x",
+    "json-rpc2": "^0.8.1",
+    "redis": "0.12.1",
+    "url": "0.10.2",
+	"MD5": "1.2.1",
+	"node-gyp": "1.0.2",
+	"node-schedule": "0.1.16",
+	"socket.io": "1.3.5",
+	"socket.io-client": "1.3.5",
+	"socket.io-stream": "0.6.1"
+  },
+  "main": "app.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "ljh6341@gmail.com",
+  "license": "MIT"
+}
