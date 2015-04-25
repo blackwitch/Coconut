@@ -1,4 +1,4 @@
-###Chapter 3. Essential particular
+##Chapter 3. Essential particular
 
 Coconut의 주요 기능은 아래 세가지로, 다음과 같습니다.
 

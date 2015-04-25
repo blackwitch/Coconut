@@ -1,37 +1,43 @@
 #The Coconut Manual
 
 
-###Table of Contents
-I. Summary
-1. History
-2.	Our goal
-3.	Essential particular
-4.	Architecture
-5.	Cautions
+##Table of Contents
+###I. Summary  
+[1. History](history.md)  
+[2.	Our goal](our_goal.md)  
+[3.	Essential particular](essential_particular.md)  
+[4.	Architecture](architecture.md)  
+[5.	Cautions](cautions.md)  
 
-II. Installation
-6.	Install
- 1.	Required Packages
- 2.	Installing Redis
- 3.	Installing Coconut Manager/ Agent
- 4.	Installing Coconut Tool
+<br>
+###II. Installation  
+[6.	Install](install.md)  
+1.	Required Packages
+2.	Installing Redis
+3.	Installing Coconut Manager/ Agent
+4.	Installing Coconut Tool
 
-III. Basics
- 7.	Monitoring
- 8.	Management
- 9.	Control
+<br>
+###III. Basics  
+[7.	Monitoring](monitoring.md)  
+[8.	Management](management.md)  
+[9.	Control](control.md)  
 
-IV. Advanced Topics
- 10. Commands
+<br>
+###IV. Advanced Topics  
+[10. Commands](commands.md)  
 
-V. Goals
- 11. Goals
+<br>
+###V. Goals  
+[11. Goals](goals.md)  
 
-VI. Help
- 12. Help
+<br>
+###VI. Help  
+[12. Help](help.md)  
 
-VII. Reference
- 13. Reference
+<br>
+###VII. Reference  
+[13. Reference](reference.md)  
 
 
  

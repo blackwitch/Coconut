@@ -1,4 +1,4 @@
-###Chapter 2. Our goal
+##Chapter 2. Our goal
 
 우리는 DevOps 팀에 알맞은 서비스 운영 툴 제작을 최우선 목표로 정하고 개발을 진행 중에 있습니다. 이를 위해 제작된 기능들에 대해서는 다음 Chapter에서 기술되어 있으며, 상세한 사용법은 "III. Basics"와 "IV. Advanced Topics"를 참고하세요.
 
