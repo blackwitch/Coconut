@@ -12,10 +12,10 @@
 <br>
 ###II. Installation  
 [6.	Install](install.md)  
-1.	Required Packages
-2.	Installing Redis
-3.	Installing Coconut Manager/ Agent
-4.	Installing Coconut Tool
+ 1.	Required Packages  
+ 2.	Installing Redis  
+ 3.	Installing Coconut Manager/ Agent  
+ 4.	Installing Coconut Tool  
 
 <br>
 ###III. Basics  
