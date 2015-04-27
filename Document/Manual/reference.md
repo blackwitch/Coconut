@@ -1,6 +1,6 @@
 ##Chapter 13. Reference
 
-###Front-end에 사용된 기술
+###Tool에 사용된 기술
 1.	JQuery		: https://jquery.com/
 2.	JQuery-UI 	: https://jqueryui.com/
 3.	bootstrap	: http://getbootstrap.com/
@@ -10,7 +10,7 @@
 7.	socket.io		: http://socket.io/
 
 <br>
-###Management Server
+###Manager에 사용된 기술
 1.	nodejs		: https://nodejs.org/
 2.	express		: http://expressjs.com/
 3.	body-parser	: https://www.npmjs.com/package/body-parser
@@ -20,7 +20,7 @@
 7.	MD5 npm 	: https://www.npmjs.com/package/MD
 
 <br>
-###Agent
+###Agent에 사용된 기술
 1.	nodejs		: https://nodejs.org/
 2.	express		: http://expressjs.com/
 3.	body-parser	: https://www.npmjs.com/package/body-parser
