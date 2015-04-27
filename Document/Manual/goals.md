@@ -1,9 +1,9 @@
 ##Chapter 11. Goal
 
 ###기능 작업들  
-1.	파일 업로드에 대한 error 정보를 front로 전송, 표기하기
-2.	front에서 system card를 확장하여 모니터링 정보를 상세히 볼 수 있는 기능 디자인 및 기능 추가
-3.	front에서 system card에 network traffic 정보 추가
+1.	파일 업로드에 대한 error 정보를 Tool로 전송, 표기하기
+2.	Tool에서 system card를 확장하여 모니터링 정보를 상세히 볼 수 있는 기능 디자인 및 기능 추가
+3.	Tool에서 system card에 network traffic 정보 추가
 4.	memory, disk, network 모니터링 정보를 각 코어별로 상세히 볼 수 있는 기능 추가
 5.	관리 대상인 process별 cpu/memory 사용률 모니터링 기능 추가
 6.	log 검색 혹은 다운로드 기능
