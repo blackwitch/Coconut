@@ -1,6 +1,6 @@
 ##Chapter 10. Commands
 
-이 장에서는 Coconut에서 제공하는 Terminal에서 활용할 수 있는 Commands들에 대해서 상세히 논의하겠습니다. 이 기능은 JQueryTerminal(http://terminal.jcubic.pl/)을 사용해 제작되었습니다. http를 통해 management로 전달되며, 이를 다시 Agent로 전달하여 결과를 다시 front로 전달합니다.  
+이 장에서는 Coconut에서 제공하는 Terminal에서 활용할 수 있는 Commands들에 대해서 상세히 논의하겠습니다. 이 기능은 JQueryTerminal(http://terminal.jcubic.pl/)을 사용해 제작되었습니다. http를 통해 management로 전달되며, 이를 다시 Agent로 전달하여 결과를 다시 Tool로 전달합니다.  
 모든 명령어는 windows와 linux 모두를 지원합니다. 예를 들어 ls와 dir을 동시에 지원하며, 어느 시스템에서든 두 명령어를 같은 목적으로 사용할 수 있습니다.  
 
 이제 종류별로 각 기능들을 알아보겠습니다.
@@ -35,6 +35,6 @@
 
 |명령어	|상세 |설명|
 |:-----------|------------:|:------------:|
-|Curl	|curl |지원|
+|curl	|curl |지원|
 |svn	|Svn |지원|
   
