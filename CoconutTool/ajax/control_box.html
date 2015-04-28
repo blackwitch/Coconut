@@ -180,7 +180,8 @@
 					</td><td width="30"></td>
 				<td>
 					<div> <label>target Path :</label> <input id="target_path" class="pathinputbox"> </div>
-					<div> <label>Distribution Repo :</label> <input id="dist_path" class="pathinputbox"> <button id="btn-patch" type="button" class="btn btn-info btn-xs btn-label-left"><span><i class="fa fa-cloud-download"></i></span> Patch</button></div>
+<!-- 					<div> <label>Distribution Repo :</label> <input id="dist_path" class="pathinputbox"> <button id="btn-patch" type="button" class="btn btn-info btn-xs btn-label-left"><span><i class="fa fa-cloud-download"></i></span> Patch</button></div>
+-->
 					<div> <label>Upload File :</label> <input type="file" id="file_path" class="pathinputbox" readonly> <button id="btn-upload-file" type="button" class="btn btn-info btn-xs btn-label-left"><span><i class="fa fa-upload"></i></span> Upload</button>
 					</div>
 					<div>
@@ -443,7 +444,7 @@ function updateServerCard(){
 			divSrvGrid +='<i class="fa fa-windows"></i>';
 		else if (info[1].indexOf("Linux") >= 0)
 			divSrvGrid +='<i class="fa fa-linux"></i>';
-		divSrvGrid +=    '<span id="group_'+srvUUIDList[i]+'">'+info[5]+'</span> / <span id="nick_'+srvUUIDList[i]+'">'+info[4]+'</span> <input type="checkbox" id="chk_srvgrid_'+srvUUIDList[i]+'"> </h4> ';
+		divSrvGrid +=    '<span id="group_name_'+srvUUIDList[i]+'">'+info[5]+'</span> / <span id="nick_'+srvUUIDList[i]+'">'+info[4]+'</span> <input type="checkbox" id="chk_srvgrid_'+srvUUIDList[i]+'"> </h4> ';
 		divSrvGrid +=    '	<small>' + info[0] + '</small>';
 		divSrvGrid +=    '	<div class="ow-settings">';
 		divSrvGrid +=    '			<a href="#" class="dropdown-toggle console" data-toggle="dropdown"><i class="fa fa-gears"></i></a>';
@@ -674,8 +675,8 @@ function doChangeNick(_elemid){
 		if ( valid ) {
 			//	do something
 			var _id ='';
-			if(_elemid.indexOf('group_') >= 0)
-				_id = _elemid.replace('group_', '');
+			if(_elemid.indexOf('group_name_') >= 0)
+				_id = _elemid.replace('group_name_', '');
 			else 
 				_id = _elemid.replace('nick_', '');
 				
@@ -683,7 +684,7 @@ function doChangeNick(_elemid){
 				'uid': _id,
 				'nick': nick.val()
 			};
-			if(_elemid.indexOf('group_') >= 0){
+			if(_elemid.indexOf('group_name_') >= 0){
 				$.post(ipAPI+"/front_modify_group", post_data).done(function(res) {
 					document.getElementById(_elemid).innerHTML = res.newnick;
 					dialog.dialog( "close" );
@@ -757,7 +758,7 @@ $(document).on('click',function(evt){
 	/////////////////////////////////////////
 	//	change nick name
 		doChangeNick(elemId);
-	}else if(elemId.indexOf('group_') >= 0){
+	}else if(elemId.indexOf('group_name_') >= 0){
 	/////////////////////////////////////////
 	//	change group name
 		doChangeNick(elemId);
