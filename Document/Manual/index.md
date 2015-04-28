@@ -3,15 +3,15 @@
 
 ##Table of Contents
 ###I. Summary  
-[1. History](history.md)  
-[2.	Our goal](our_goal.md)  
-[3.	Essential particular](essential_particular.md)  
-[4.	Architecture](architecture.md)  
-[5.	Cautions](cautions.md)  
+[1. History](01_history.md)  
+[2.	Summary](02_summary.md)  
+[3.	Essential particular](03_essential_particular.md)  
+[4.	Architecture](04_architecture.md)  
+[5.	Cautions](05_cautions.md)  
 
 <br>
 ###II. Installation  
-[6.	Install](install.md)  
+[6.	Install](06_install.md)  
  1.	Required Packages  
  2.	Installing Redis  
  3.	Installing Coconut Manager/ Agent  
@@ -19,25 +19,25 @@
 
 <br>
 ###III. Basics  
-[7.	Monitoring](monitoring.md)  
-[8.	Management](management.md)  
-[9.	Control](control.md)  
+[7.	Monitoring](07_monitoring.md)  
+[8.	Management](08_management.md)  
+[9.	Control](09_control.md)  
 
 <br>
 ###IV. Advanced Topics  
-[10. Commands](commands.md)  
+[10. Commands](10_commands.md)  
 
 <br>
 ###V. Goals  
-[11. Goals](goals.md)  
+[11. Goals](11_goals.md)  
 
 <br>
 ###VI. Help  
-[12. Help](help.md)  
+[12. Help](12_help.md)  
 
 <br>
 ###VII. Reference  
-[13. Reference](reference.md)  
+[13. Reference](13_reference.md)  
 
 
  
