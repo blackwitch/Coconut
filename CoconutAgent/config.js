@@ -1,15 +1,15 @@
 
-var ipRedis = '172.31.5.70';
-var portRedis = 6379;
+var ipRedis = 'localhost';
+var portRedis = 38001;
 
-var ipMng = '172.31.5.12';
-var portMngApi = 5070;
-var portMngFileTransfer = 5060;
-var portMngInternalHttp = 8080;
-var portMngExternalHttp = 8443;
+var ipMng = 'localhost';
+var portMngApi = 38150;
+var portMngFileTransfer = 38250;
+var portMngInternalHttp = 38080;
+var portMngExternalHttp = 38443;
 
-var portAgentRpc = 5090;
-var portAgentFileTransfer = 5080;
+var portAgentRpc = 38390;
+var portAgentFileTransfer = 38380;
 
 exports.getIpRedis = function() {
 	return ipRedis;

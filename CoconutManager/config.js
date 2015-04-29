@@ -1,14 +1,14 @@
-var ipRedis = '172.31.5.70';	//	ip address of Redis
-var portRedis = 6379;			//	port number of Redis
+var ipRedis = 'localhost';	//	ip address of Redis
+var portRedis = 38001;			//	port number of Redis
 
-var ipMng = '172.31.5.12';		//	ip address of Coconut Manager 
-var portMngApi = 5070;			//	port number of Coconut Manager 
-var portMngFileTransfer = 5060;	//	file transfer port number of Coconut Manager
-var portMngInternalHttp = 8080;	//	http port number of Coconut Manager for Coconut Agent
-var portMngExternalHttp = 8443;	//	http port number of Coconut Manager for Tool User
+var ipMng = 'localhost';		//	ip address of Coconut Manager 
+var portMngApi = 38150;			//	port number of Coconut Manager 
+var portMngFileTransfer = 38250;	//	file transfer port number of Coconut Manager
+var portMngInternalHttp = 38080;	//	http port number of Coconut Manager for Coconut Agent
+var portMngExternalHttp = 38443;	//	http port number of Coconut Manager for Tool User
 
-var portAgentRpc = 5090;
-var portAgentFileTransfer = 5080;
+var portAgentRpc = 38390;
+var portAgentFileTransfer = 38380;
 
 
 exports.getIpRedis = function() {
