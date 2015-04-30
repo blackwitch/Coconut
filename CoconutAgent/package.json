@@ -13,7 +13,7 @@
 	"socket.io": "1.3.5",
 	"socket.io-stream": "0.6.1",
 	"ps-node" : "0.0.3",
-	"windows-cpu" : "0.1.3",
+	"windows-cpu" : ">0.1.3",
 	"request" : "2.53.0"
 	
   },
