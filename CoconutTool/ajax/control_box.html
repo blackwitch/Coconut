@@ -242,10 +242,10 @@
 </div>
 
 <script>
-var ipManager = "172.31.5.12";
-var ipFileUpload ="http://" + ipManager + ":5060" ;
-var ipAPI ="http://" + ipManager + ":8443";
-var ipTerminal = "http://" + ipManager + ":5070";
+var ipManager = "localhost";
+var ipFileUpload ="http://" + ipManager + ":38250" ;
+var ipAPI ="http://" + ipManager + ":38443";
+var ipTerminal = "http://" + ipManager + ":38150";
 
 var target_path_list = [	//자주 사용하는 경로는 이곳에 미리 넣어두셔도 됩니다. 추후 이 정보는 redis에 저장되도록 할 예정입니다.
   "/var",
@@ -329,8 +329,22 @@ function RedrawCPULoad(elem){
 	};
 
 	$.post(ipAPI+"/srv_getrtinfo", post_data).done(function(res) {
-		var knob_elem = $("#knob-srv-" + res.arrIdx);
+
+		var info = srv_info_list[res.arrIdx];
+
+		//	update memory usage
+		info[7] = res.freemem;
+		document.getElementById('srvgrid_mem_'+res.uid).innerHTML = '<i class="fa fa-tasks"></i> Mem    : ' +  Math.round(((info[2] - info[7])*100)/info[2]) + '%';
 		
+		//	update network usage
+		if( info.length>11){
+			info[11]= res.net_recv;
+			info[12]= res.net_send;
+			document.getElementById('srvgrid_net_'+res.uid).innerHTML = '<i class="fa fa-exchange"></i> Net    : RECV(' +  Math.round( info[11]/1024 ) + 'KB), SEND(' + Math.round( info[12]/1024 ) + 'KB)' ;
+		}
+
+		//	udpate cpu usage
+		var knob_elem = $("#knob-srv-" + res.arrIdx);
 		var apps = res.apps.split(',');
 		var tFlag = false;
 		document.getElementById('srvgrid_help_'+res.uid).innerHTML = '';
@@ -474,7 +488,8 @@ function updateServerCard(){
 			divSrvGrid +='<i class="fa fa-linux"></i>';
 		divSrvGrid +=    ' ' + info[1]+'</div>';
 		divSrvGrid +=    '			<div class="row"><i class="fa fa-bolt"></i> Uptime : ' + Math.round((info[6]/24/60/60)*10)/10 + 'days </div>';
-		divSrvGrid +=    '			<div class="row"><i class="fa fa-user"></i> Mem    : ' +  Math.round((info[7]*100)/info[2]) + '% </div>';
+		divSrvGrid +=    '			<div class="row" id="srvgrid_mem_'+ srvUUIDList[i]+'"></div>';
+		divSrvGrid +=    '			<div class="row" id="srvgrid_net_'+ srvUUIDList[i]+'"></div>';
 		divSrvGrid +=    '			<div id="srvgrid_help_'+ srvUUIDList[i]+'"class="row"></div>';
 		divSrvGrid +=    '		</div>';
 		divSrvGrid +=    '	</div>';

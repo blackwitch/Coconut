@@ -1,5 +1,5 @@
 var ipRedis = 'localhost';	//	ip address of Redis
-var portRedis = 38001;			//	port number of Redis
+var portRedis = 6379;			//	port number of Redis
 
 var ipMng = 'localhost';		//	ip address of Coconut Manager 
 var portMngApi = 38150;			//	port number of Coconut Manager 

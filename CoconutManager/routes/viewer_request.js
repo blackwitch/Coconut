@@ -131,7 +131,7 @@ exports.srv_getrtinfo = function(req,res){
 	res.setHeader('Access-Control-Allow-Origin','*');
 	var redis_cli = redis.createClient(cfg.getPortRedis(),cfg.getIpRedis());
 	
-	redis_cli.lrange(req.body.uid,9,10,function(err,reply){
+	redis_cli.lrange(req.body.uid,7,13,function(err,reply){
 		if(err){
 			console.log(err);
 			redis_cli.quit(function(err,res){});
@@ -139,7 +139,7 @@ exports.srv_getrtinfo = function(req,res){
 			return;
 		}
 		redis_cli.quit(function(err,res){});
-		var data = {'arrIdx': req.body.arrIdx, 'uid':req.body.uid, 'cpuload':reply[0], 'apps':reply[1]};
+		var data = {'arrIdx': req.body.arrIdx, 'uid':req.body.uid, 'cpuload':reply[2], 'apps':reply[3], 'freemem': reply[0], 'net_recv':reply[4], 'net_send':reply[5]};
 		res.send(data);
 	});
 };

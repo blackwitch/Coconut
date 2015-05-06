@@ -42,12 +42,16 @@ exports.agtRecv_HandShake = function(req,res){
 					redis_cli.rpush(uid, req.body.totalmem);
 					redis_cli.rpush(uid, req.body.cpucount);
 					redis_cli.rpush(uid, 'nick');
+
 					redis_cli.rpush(uid, 'group');
 					redis_cli.rpush(uid, 'uptime');
 					redis_cli.rpush(uid, 'freemem');
 					redis_cli.rpush(uid, 'freedisk');
 					redis_cli.rpush(uid, 'maxcpuusage');
+
 					redis_cli.rpush(uid, 'apps');
+					redis_cli.rpush(uid, 'net_recv');
+					redis_cli.rpush(uid, 'net_send');
 					
 					res.send( {'error':'0'});
 					redis_cli.quit(function(err,resp){});
@@ -69,7 +73,6 @@ exports.agtRecv_HandShake = function(req,res){
 						res.send( {'error':'no list'});
 					}else{
 						//	update info
-						console.log( reply);
 						res.send( {'apps': reply});
 					}
 				});
@@ -89,7 +92,6 @@ exports.agtRecv_UpdateInfo = function(req,res){
 		redis_cli.quit(function(err,reply){});
 		return;
 	}
-
 	
 	var uid = req.body.uid;
 	var redis_cli = redis.createClient(cfg.getPortRedis(),cfg.getIpRedis());
@@ -100,9 +102,31 @@ exports.agtRecv_UpdateInfo = function(req,res){
 		}else{
 			redis_cli.lset(uid, 7, req.body.freemem);
 			redis_cli.lset(uid, 9, req.body.cpuload);
-			if( req.body.apps != undefined)
-			{
+			if( req.body.apps != undefined){
 				redis_cli.lset(uid, 10, req.body.apps);
+			}
+			if( req.body.net_recv != undefined){
+				redis_cli.lset(uid, 11, req.body.net_recv, function(err,ret){
+					if(err)
+					{
+						console.log(err);
+						redis_cli.rpush(uid, 'net_recv');
+						redis_cli.rpush(uid, 'net_send');
+					}
+				});
+			}else{
+				console.log( 'no net_recv data! >> ' + uid);
+			}
+			if( req.body.net_send != undefined){
+				redis_cli.lset(uid, 12, req.body.net_send, function(err,ret){
+					if(err){
+						console.log(err);
+						redis_cli.rpush(uid, 'net_recv');
+						redis_cli.rpush(uid, 'net_send');
+					}
+				});
+			}else{
+				console.log( 'no net_send data! >> ' + uid);
 			}
 			res.send( {'error':'0'});
 		}

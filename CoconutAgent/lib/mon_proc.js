@@ -5,13 +5,16 @@ var https = require('https');
 var wcpu= require('windows-cpu');
 var request = require('request');
 var ps 	= require('ps-node');
+var spawn= require('child_process').spawn;
 
 var cfg = require('../config');
 var util= require('./util');
 var IS_WIN = process.platform === 'win32';
 
+
 var uuid= '';
 var mngAppsList = [];
+var winLastRecv = 0, winLastSend = 0;
 
 function doHandShaking(){
 	console.log('uuid = ' + uuid);
@@ -51,7 +54,6 @@ function doHandShaking(){
 			if(body.apps != undefined){
 				for(var i=0;i<body.apps.length;i++){
 					mngAppsList.push( body.apps[i] );
-					console.log( ' >> ' + body.apps[i]);
 				}
 			}
 		}
@@ -71,7 +73,9 @@ exports.handshake = function(){
 	doHandShaking();
 };
 
-function sendSystemInfo_cpu(cpus, maxCpuLoad){
+
+
+function sendSystemInfo_cpu(cpus, maxCpuLoad, net_recv, net_send){
 	if( mngAppsList.length > 0)
 	{
 		ps.lookup({
@@ -80,7 +84,7 @@ function sendSystemInfo_cpu(cpus, maxCpuLoad){
 		}, function(err,psList){
 			if(err)
 			{
-				sendSystemInfo(cpus, maxCpuLoad);
+				sendSystemInfo(cpus, maxCpuLoad, net_recv, net_send);
 			}else{
 				var arrayApps = mngAppsList.slice();
 				for(var i=0;i<psList.length;i++){
@@ -105,22 +109,24 @@ function sendSystemInfo_cpu(cpus, maxCpuLoad){
 						arrayApps[j] += '|0' ;	
 					}
 				}
-				sendSystemInfo(cpus, maxCpuLoad, arrayApps);
+				sendSystemInfo(cpus, maxCpuLoad, net_recv, net_send, arrayApps);
 			}
 		});
 	}else
 	{
-		sendSystemInfo(cpus, maxCpuLoad);
+		sendSystemInfo(cpus, maxCpuLoad,net_recv, net_send);
 	}
 }
 
-function sendSystemInfo(cpus, maxCpuLoad, registed_apps){
+function sendSystemInfo(cpus, maxCpuLoad, net_recv, net_send, registed_apps){
 	var post_data = {
 		'uid': uuid, 
 		'uptime':  os.uptime(),
 		'cpuload':  maxCpuLoad,
 		'apps' : registed_apps,
-		'freemem' : os.freemem()
+		'freemem' : os.freemem(),
+		'net_recv' : net_recv,
+		'net_send' : net_send
 	};
 	
 	request({
@@ -142,21 +148,69 @@ function sendSystemInfo(cpus, maxCpuLoad, registed_apps){
 exports.updateSystemInfo = function(){
 	var cpus = os.cpus();
 	var maxCpuLoad = 0;
-	
+
 	if( IS_WIN )
 	{
-		wcpu.totalLoad(function(err, results){
-			if(err){
-				console.log(err);
-			}else{
-				if(results === undefined)
-					return;
-				maxCpuLoad = results[0];
-				sendSystemInfo_cpu(cpus, maxCpuLoad);
-			}
+		var cmd = spawn('netstat', ['-e']);
+		cmd.stdout.setEncoding('utf8');
+		var result = '';	//	다중 호출시 문제됨. 0-0 윈도우에서 stdout이 두번 호출되며 두번째에 상세 결과가 있기 때문에 일단 임시로 이렇게 처리하자.
+
+		cmd.stdout.on('data', function(data){
+			result += data;
+		});
+		cmd.stdout.on('end', function(data){
+			var allData = result.split(/[ \r\n]+/);
+			console.log( allData );
+			var recvTotal = (parseInt(allData[5]) - winLastRecv)/60;	//	per sec
+			var sendTotal = (parseInt(allData[6]) - winLastSend)/60;	//	per sec
+			winLastRecv = parseInt(allData[5]);
+			winLastSend = parseInt(allData[6]);
+
+			maxCpuLoad = os.loadavg()[0];
+			wcpu.totalLoad(function(err, results){
+				if(err){
+					console.log(err);
+				}else{
+					if(results === undefined)
+						return;
+					maxCpuLoad = results[0];
+					sendSystemInfo_cpu(cpus, maxCpuLoad, recvTotal, sendTotal);
+				}
+			});
+		});		
+		cmd.stderr.on('data', function(data){
+			result += data;
+		});
+		cmd.on('exit', function(data){
+			result += data;
 		});
 	}else{
-		maxCpuLoad = os.loadavg()[0];
-		sendSystemInfo_cpu(cpus, maxCpuLoad);
+		var cmd = spawn('ss');
+		cmd.stdout.setEncoding('utf8');
+		var result = '';	//	다중 호출시 문제됨. 0-0 윈도우에서 stdout이 두번 호출되며 두번째에 상세 결과가 있기 때문에 일단 임시로 이렇게 처리하자.
+		
+		cmd.stdout.on('data', function(data){
+			result += data;
+		});
+		cmd.stdout.on('end', function(data){
+			var allData = result.split(/[ ]+/);
+			var lineCount = 8;
+			var allLineCount = allData.length / lineCount;
+			var recvTotal = 0, sendTotal = 0;
+			for(var i=1;i<allLineCount;i++){
+				recvTotal += parseInt(allData[(i*lineCount) + 2]);
+				sendTotal += parseInt(allData[(i*lineCount) + 3]);
+			}
+			//console.log( 'recv : ' + recvTotal + ', send : ' + sendTotal );
+			maxCpuLoad = os.loadavg()[0];
+			sendSystemInfo_cpu(cpus, maxCpuLoad,recvTotal, sendTotal);
+		});		
+		cmd.stderr.on('data', function(data){
+			result += data;
+		});
+		cmd.on('exit', function(data){
+			result += data;
+		});
+
 	}
 }
