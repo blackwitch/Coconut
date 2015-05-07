@@ -7,6 +7,7 @@
 ###2차 목표
 1. 2015년 6월 10일 업데이트
   - Tool을 nodejs로 기동하도록 수정. 별도 웹서버 제거
+  - 저장소에서 일괄 내려받기 기능 오픈
   - Tool의 모니터링 디자인&기능 개선
     - Tool에서 system card를 확장하여 모니터링 정보를 상세히 볼 수 있는 기능 디자인 및 기능 추가
     - Tool에서 system card에 network traffic 정보 추가
