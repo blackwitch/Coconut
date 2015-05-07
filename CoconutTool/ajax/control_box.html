@@ -334,7 +334,13 @@ function RedrawCPULoad(elem){
 
 		//	update memory usage
 		info[7] = res.freemem;
-		document.getElementById('srvgrid_mem_'+res.uid).innerHTML = '<i class="fa fa-tasks"></i> Mem    : ' +  Math.round(((info[2] - info[7])*100)/info[2]) + '%';
+		var value =  Math.round(((info[2] - info[7])*100)/info[2]);
+
+		if(value > 80){
+			document.getElementById('srvgrid_mem_'+res.uid).innerHTML = '<p style="color:red"><i class="fa fa-tasks"></i> Mem    : ' + value + '%</p>';
+		}else{
+			document.getElementById('srvgrid_mem_'+res.uid).innerHTML = '<i class="fa fa-tasks"></i> Mem    : ' + value + '%';
+		}
 		
 		//	update network usage
 		if( info.length>11){

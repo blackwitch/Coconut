@@ -161,8 +161,8 @@ exports.updateSystemInfo = function(){
 		cmd.stdout.on('end', function(data){
 			var allData = result.split(/[ \r\n]+/);
 			console.log( allData );
-			var recvTotal = (parseInt(allData[5]) - winLastRecv)/60;	//	per sec
-			var sendTotal = (parseInt(allData[6]) - winLastSend)/60;	//	per sec
+			var recvTotal = (parseInt(allData[5]) - winLastRecv)/10;	//	per sec
+			var sendTotal = (parseInt(allData[6]) - winLastSend)/10;	//	per sec
 			winLastRecv = parseInt(allData[5]);
 			winLastSend = parseInt(allData[6]);
 
