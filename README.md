@@ -5,7 +5,7 @@ Service Operating System
 
 Agent와 중앙 관리 시스템, 그리고 툴을 제공하며, 주요 기능은 아래와 같습니다.
 
-![툴 화면 구성](https://github.com/jacking75/Coconut/blob/master/Document/Manual/resource/coconut.png)
+![툴 화면 구성](Document/Manual/resource/coconut.png)
 
 (터미널 탭) : 이 창을 통해 각 서버로 접속하여 상세한 컨트롤을 할 수 있습니다.
 
