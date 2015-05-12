@@ -205,22 +205,25 @@ exports.dist_repo_update = function(req,res){
 	var count = 0;
 	var disconnectError = 0;
 	for(var i=0; i<req.body.servers.length; i++){
-		console.log( 'try to connect to ' + req.body.servers[i].replace('IP_',''));
-		var client = rpcForCli.Client.$create(cfg.getPortAgentRpc(),req.body.servers[i].replace('IP_',''));
+		var agentIP = req.body.servers[i].replace('IP_','');
+		console.log( 'try to connect to ' + agentIP);
+		var client = rpcForCli.Client.$create(cfg.getPortAgentRpc(),agentIP);
 		client.call('download', [req.body.target_path, req.body.dist_repo_path],function(err,reply){
 			if(err){
 				console.log('ps request error : ' + err);
-				if(reply === undefined)
-					disconnectError++;
-				else
-					errlist.push(reply.ip);
+				if(reply === undefined){
+					disconnectError++; 
+					console.log('connect error ip : ' + client.host);
+				}
+				errlist.push(client.host);
+				
 			}else{
-				succlist.push(reply.ip);
+				succlist.push(client.host);
 			}
+			
 			++count;
 			if(count == req.body.servers.length)
 			{
-				console.log('disconnectError >> ' + disconnectError);
 				console.log('errlist >> ' + errlist);
 				console.log('succlist >> ' + succlist);
 				res.send({'errlist':errlist, 'succlist':succlist});

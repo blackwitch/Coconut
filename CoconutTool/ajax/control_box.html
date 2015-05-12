@@ -180,8 +180,7 @@
 					</td><td width="30"></td>
 				<td>
 					<div> <label>target Path :</label> <input id="target_path" class="pathinputbox"> </div>
-<!-- 					<div> <label>Distribution Repo :</label> <input id="dist_path" class="pathinputbox"> <button id="btn-patch" type="button" class="btn btn-info btn-xs btn-label-left"><span><i class="fa fa-cloud-download"></i></span> Patch</button></div>
--->
+ 					<div> <label>Distribution Repo :</label> <input id="dist_path" class="pathinputbox"> <button id="btn-patch" type="button" class="btn btn-info btn-xs btn-label-left"><span><i class="fa fa-cloud-download"></i></span> Sync</button></div>
 					<div> <label>Upload File :</label> <input type="file" id="file_path" class="pathinputbox" readonly> <button id="btn-upload-file" type="button" class="btn btn-info btn-xs btn-label-left"><span><i class="fa fa-upload"></i></span> Upload</button>
 					</div>
 					<div>
@@ -1003,11 +1002,19 @@ $(document).ready(function() {
 		  console.log(post_data);
 
   		  $.post(ipAPI+"/dist_repo_update", post_data).done(function(res) {
-			if(res.error===undefined || res.error != 0){
-				console.log( 'patch error : ');
-				//	remember error list and show admin this problem
+			if(res.error === undefined){
+				UploadedSize = res.succlist.length + res.errlist.length;
+				console.log('error : ' + res.errlist.length);
+				if(res.errlist.length){
+					console.log('sync error server list : ' + res.errlist);
+				}
+			}else{
+				console.log( 'patch error : ' + res.error);				
 			}
 		  });
+		  AllSize = checked_srv_list.length;
+		  UploadedSize = 0;
+
           dialog.dialog( "open" );
       }),
 	  uploadButton = $('#btn-upload-file')
