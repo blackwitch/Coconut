@@ -180,7 +180,7 @@
 					</td><td width="30"></td>
 				<td>
 					<div> <label>target Path :</label> <input id="target_path" class="pathinputbox"> </div>
- 					<div> <label>Distribution Repo :</label> <input id="dist_path" class="pathinputbox"> <button id="btn-patch" type="button" class="btn btn-info btn-xs btn-label-left"><span><i class="fa fa-cloud-download"></i></span> Sync</button></div>
+ 					<div> <label>Distribution Repo :</label> <input id="dist_path" class="pathinputbox"> <button id="btn-patch" type="button" class="btn btn-info btn-xs btn-label-left"><span><i class="fa fa-cloud-download"></i></span> Sync</button>  <input type="checkbox" id="btn-isAllSync">Sync forcibly</div>
 					<div> <label>Upload File :</label> <input type="file" id="file_path" class="pathinputbox" readonly> <button id="btn-upload-file" type="button" class="btn btn-info btn-xs btn-label-left"><span><i class="fa fa-upload"></i></span> Upload</button>
 					</div>
 					<div>
@@ -994,9 +994,18 @@ $(document).ready(function() {
 			console.log(' no selected server');
 			return;
 		  }
+
+		var checkbox = document.getElementById('btn-isAllSync');
+		var isAll = 0;
+		if(checkbox != undefined && checkbox.checked)
+		{
+			isAll = 1;
+		}
+
 		  var post_data = {
 			'target_path' : tarpath,
 			'dist_repo_path' : distpath,
+			'isAll' : isAll,
 			'servers' : checked_srv_list
 		  };
 		  console.log(post_data);

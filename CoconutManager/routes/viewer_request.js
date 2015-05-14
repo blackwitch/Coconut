@@ -198,7 +198,8 @@ exports.dist_repo_update = function(req,res){
 	
 	//req.body.target_path;
 	//req.body.dist_repo_path;
-	//req.body.servers
+	//req.body.isAll;
+	//req.body.servers;
 	
 	var errlist = [];
 	var succlist = [];
@@ -208,7 +209,7 @@ exports.dist_repo_update = function(req,res){
 		var agentIP = req.body.servers[i].replace('IP_','');
 		console.log( 'try to connect to ' + agentIP);
 		var client = rpcForCli.Client.$create(cfg.getPortAgentRpc(),agentIP);
-		client.call('download', [req.body.target_path, req.body.dist_repo_path],function(err,reply){
+		client.call('download', [req.body.target_path, req.body.dist_repo_path, req.body.isAll],function(err,reply){
 			if(err){
 				console.log('ps request error : ' + err);
 				if(reply === undefined){

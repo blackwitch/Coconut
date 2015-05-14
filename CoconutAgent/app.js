@@ -18,7 +18,6 @@ var app = express();
 
 proc.handshake();
 
-
 //	schedules
 var tsRule0 = new scheduler.RecurrenceRule();
 tsRule0.second = 0;	//	send system info per 1min
@@ -71,7 +70,7 @@ var serv = rpc.Server.$create({
 // Add your methods 
 function download(args, opt, callback){
 	console.log('start download ... ');
-	procUpdate.download(args, ips[ips.length-1], callback);
+	procUpdate.download(args, callback);
 }
 
 serv.expose('ps', cmd.ps);
