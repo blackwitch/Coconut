@@ -7,6 +7,7 @@
 	var registed_app_list = new MAP();
 	flag_all_group = true;
 	myAuthKey = '';
+	receivedSrvInfo = 0;
 </script>
 
 <style>
@@ -283,16 +284,11 @@ function MakeSelect2(){
 }
 
 function getSrvList() {
-	//srvUUIDList = [];
-	//cpuLoadValue = 0;
+	srvUUIDList = [];
+	receivedSrvInfo = 0;
  	$.post(ipAPI+"/srv_list").done(function(res) {
 		srvUUIDList = res;
-		for(var i = 0;i< srvUUIDList.length; i++)
-			srv_info_list.push(' ');
-		srv_info_list.push(0);
-			
-		for(var i = 0;i< srvUUIDList.length; i++)
-		{
+		for(var i = 0;i< srvUUIDList.length; i++){
 			getSrvInfo(i, srvUUIDList[i] );
 		}
 	});
@@ -300,9 +296,9 @@ function getSrvList() {
 
 function getSrvInfo( arrayIdx, _uid ) {
 	$.post(ipAPI+"/srv_info", {'uid':_uid, 'arrIdx':arrayIdx}).done(function(res) {
-		if(res.info.length > 0){
-			if( srv_group_list.indexOf(res.info[5]) == -1)
-				srv_group_list.push(res.info[5]);
+		if(res.info.nick != undefined){
+			if( srv_group_list.indexOf(res.info.group) == -1)
+				srv_group_list.push(res.info.group);
 			addSrvInfo(res.arrIdx, res.info);
 		}
 	});
@@ -332,9 +328,8 @@ function RedrawCPULoad(elem){
 		var info = srv_info_list[res.arrIdx];
 
 		//	update memory usage
-		info[7] = res.freemem;
-		var value =  Math.round(((info[2] - info[7])*100)/info[2]);
-
+		info.freemem = res.freemem;
+		var value = Math.round(((info.totalmem - info.freemem)*100)/info.totalmem);
 		if(value > 80){
 			document.getElementById('srvgrid_mem_'+res.uid).innerHTML = '<p style="color:red"><i class="fa fa-tasks"></i> Mem    : ' + value + '%</p>';
 		}else{
@@ -343,9 +338,9 @@ function RedrawCPULoad(elem){
 		
 		//	update network usage
 		if( info.length>11){
-			info[11]= res.net_recv;
-			info[12]= res.net_send;
-			document.getElementById('srvgrid_net_'+res.uid).innerHTML = '<i class="fa fa-exchange"></i> Net    : RECV(' +  Math.round( info[11]/1024 ) + 'KB), SEND(' + Math.round( info[12]/1024 ) + 'KB)' ;
+			info.net_recv= res.net_recv;
+			info.net_send= res.net_send;
+			document.getElementById('srvgrid_net_'+res.uid).innerHTML = '<i class="fa fa-exchange"></i> Net    : RECV(' +  Math.round( info.net_recv/1024 ) + 'KB), SEND(' + Math.round( info.net_send/1024 ) + 'KB)' ;
 		}
 
 		//	udpate cpu usage
@@ -383,7 +378,7 @@ function RedrawCPULoad(elem){
 
 function DrawCPULoad(){
 	var srv_monitoring_list = [];
-	for(var i=0; i<srv_info_list.length-1; i++ )
+	for(var i=0; i<srv_info_list.length; i++ )
 	{
 		srv_monitoring_list.push($('#knob-srv-' + i));
 	}
@@ -405,9 +400,9 @@ function UpdateGroupList(){
 function addSrvInfo(idx, _info){
 
 	srv_info_list[idx]= _info;
-	srv_info_list[srv_info_list.length-1] ++ ;
+	++receivedSrvInfo;
 
-	if( srv_info_list[srv_info_list.length-1] == srvUUIDList.length)
+	if( receivedSrvInfo == srvUUIDList.length)
 	{
 		updateServerCard();
 		UpdateGroupList();
@@ -448,23 +443,24 @@ function updateServerCard(){
 	var divSrvGrid = '';
 	var group = $('#srv_group_select :selected').text();
 	srv_group_list =[];
-	for(var i=0;i<srv_info_list.length-1;i++){
+
+	for(var i=0;i<srv_info_list.length;i++){
 		var info = srv_info_list[i];
 		var knob_name = "knob-srv-" + i;
-		if( srv_group_list.indexOf(info[5]) == -1)
-			srv_group_list.push(info[5]);
+		if( srv_group_list.indexOf(info.group) == -1)
+			srv_group_list.push(info.group);
 			
-		if(flag_all_group == false && group != info[5])
+		if(flag_all_group == false && group != info.group)
 			continue;
 		
 		divSrvGrid += 	 '<div id="srvgrid_' + srvUUIDList[i] + '" class="col-xs-12 col-sm-6 col-md-4 ow-server roundedcorners">';
 		divSrvGrid +=    '	<h4 class="page-header text-right">';
-		if (info[1].indexOf("Win") >= 0)
+		if (info.platform.indexOf("Win") >= 0)
 			divSrvGrid +='<i class="fa fa-windows"></i>';
-		else if (info[1].indexOf("Linux") >= 0)
+		else if (info.platform.indexOf("Linux") >= 0)
 			divSrvGrid +='<i class="fa fa-linux"></i>';
-		divSrvGrid +=    '<span id="group_name_'+srvUUIDList[i]+'">'+info[5]+'</span> / <span id="nick_'+srvUUIDList[i]+'">'+info[4]+'</span> <input type="checkbox" id="chk_srvgrid_'+srvUUIDList[i]+'"> </h4> ';
-		divSrvGrid +=    '	<small>' + info[0] + '</small>';
+		divSrvGrid +=    '<span id="group_name_'+srvUUIDList[i]+'">'+info.group+'</span> / <span id="nick_'+srvUUIDList[i]+'">'+info.nick+'</span> <input type="checkbox" id="chk_srvgrid_'+srvUUIDList[i]+'"> </h4> ';
+		divSrvGrid +=    '	<small>' + info.hostname + '</small>';
 		divSrvGrid +=    '	<div class="ow-settings">';
 		divSrvGrid +=    '			<a href="#" class="dropdown-toggle console" data-toggle="dropdown"><i class="fa fa-gears"></i></a>';
 		divSrvGrid +=    '			<ul class="dropdown-menu">';
@@ -487,12 +483,12 @@ function updateServerCard(){
 		divSrvGrid +=    '		<div class="col-sm-8">';
 		divSrvGrid +=    '			<div class="row"><i class="fa fa-map-marker"></i> ' + getIPFromUUID(srvUUIDList[i]) +'</div>';
 		divSrvGrid +=    '			<div class="row">';
-		if (info[1].indexOf("Win") >= 0)
+		if (info.platform.indexOf("Win") >= 0)
 			divSrvGrid +='<i class="fa fa-windows"></i>';
-		else if (info[1].indexOf("Linux") >= 0)
+		else if (info.platform.indexOf("Linux") >= 0)
 			divSrvGrid +='<i class="fa fa-linux"></i>';
-		divSrvGrid +=    ' ' + info[1]+'</div>';
-		divSrvGrid +=    '			<div class="row"><i class="fa fa-bolt"></i> Uptime : ' + Math.round((info[6]/24/60/60)*10)/10 + 'days </div>';
+		divSrvGrid +=    ' ' + info.platform+'</div>';
+		divSrvGrid +=    '			<div class="row"><i class="fa fa-bolt"></i> Uptime : ' + Math.round((info.uptime/24/60/60)*10)/10 + 'days </div>';
 		divSrvGrid +=    '			<div class="row" id="srvgrid_mem_'+ srvUUIDList[i]+'"></div>';
 		divSrvGrid +=    '			<div class="row" id="srvgrid_net_'+ srvUUIDList[i]+'"></div>';
 		divSrvGrid +=    '			<div id="srvgrid_help_'+ srvUUIDList[i]+'"class="row"></div>';
@@ -814,7 +810,7 @@ $(document).ready(function() {
 		var group = $('#srv_group_select :selected').text();
 		checked_srv_list = [];
 		for(var i=0; i<srvUUIDList.length; i++ ){
-			if(group != srv_info_list[i][5])
+			if(group != srv_info_list[i].group)
 				continue;
 			checked_srv_list.push( srvUUIDList[i] );
 			

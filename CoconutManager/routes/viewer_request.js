@@ -23,7 +23,7 @@ exports.srv_info = function(req,res){
 	res.setHeader('Access-Control-Allow-Origin','*');
 	var redis_cli = redis.createClient(cfg.getPortRedis(),cfg.getIpRedis());
 	
-	redis_cli.lrange(req.body.uid,0,-1,function(err,reply){
+	redis_cli.hgetall(req.body.uid,function(err,reply){
 		if(err){
 			console.log(err);
 			redis_cli.quit(function(err,res){});
@@ -131,7 +131,7 @@ exports.srv_getrtinfo = function(req,res){
 	res.setHeader('Access-Control-Allow-Origin','*');
 	var redis_cli = redis.createClient(cfg.getPortRedis(),cfg.getIpRedis());
 	
-	redis_cli.lrange(req.body.uid,7,13,function(err,reply){
+	redis_cli.hmget(req.body.uid,'cpuload', 'apps', 'freemem', 'net_recv', 'net_send',function(err,reply){
 		if(err){
 			console.log(err);
 			redis_cli.quit(function(err,res){});
@@ -139,7 +139,7 @@ exports.srv_getrtinfo = function(req,res){
 			return;
 		}
 		redis_cli.quit(function(err,res){});
-		var data = {'arrIdx': req.body.arrIdx, 'uid':req.body.uid, 'cpuload':reply[2], 'apps':reply[3], 'freemem': reply[0], 'net_recv':reply[4], 'net_send':reply[5]};
+		var data = {'arrIdx': req.body.arrIdx, 'uid':req.body.uid, 'cpuload':reply[0], 'apps':reply[1], 'freemem': reply[2], 'net_recv':reply[3], 'net_send':reply[4]};
 		res.send(data);
 	});
 };
@@ -152,7 +152,7 @@ exports.modify_group = function(req,res){
 	console.log(req.body.uid);
 	console.log(req.body.nick);
 
-	redis_cli.lset(req.body.uid, 5, req.body.nick, function(err,reply){
+	redis_cli.hset(req.body.uid, "group",req.body.nick, function(err,reply){
 		if(err){
 			console.log(req.body.uid);
 			console.log(req.body.nick);
@@ -174,7 +174,7 @@ exports.modify_nick = function(req,res){
 	console.log(req.body.uid);
 	console.log(req.body.nick);
 
-	redis_cli.lset(req.body.uid, 4, req.body.nick, function(err,reply){
+	redis_cli.hset(req.body.uid, "nick", req.body.nick, function(err,reply){
 		if(err){
 			console.log(req.body.uid);
 			console.log(req.body.nick);
@@ -195,11 +195,6 @@ exports.dist_repo_update = function(req,res){
 		res.send( {'error':'-1', 'message':'no server'});
 		return;
 	}
-	
-	//req.body.target_path;
-	//req.body.dist_repo_path;
-	//req.body.isAll;
-	//req.body.servers;
 	
 	var errlist = [];
 	var succlist = [];

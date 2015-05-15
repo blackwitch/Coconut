@@ -63,19 +63,19 @@ exports.connect = function (args, opt, callback) {
 			}else{
 				var ctrlUUID = 'IP_' + _args[1];
 				var redis_cli = redis.getClient(cfg.getPortRedis(),cfg.getIpRedis());
-				redis_cli.lrange(ctrlUUID,0,-1,function(err,replyCtrlUUID){
+				redis_cli.exists(ctrlUUID,function(err,replyCtrlUUID){
 					if(err){
-						redis.close(redis_cli);
+						//redis.close(redis_cli);
 						callback(null, '[' + _args[1] + '] server is not exist.');
 						return;
 					}
 					if(replyCtrlUUID.length == 0){	//	regist this server
-						redis.close(redis_cli);
+						//redis.close(redis_cli);
 						callback(null, _args[1] + ' is not existed');
 						return;
 					}else{
 						redis_cli.lset(_args[0], 1, _args[1]);
-						redis.close(redis_cli);
+						//redis.close(redis_cli);
 						callback(null, 'connected >> ' + _args[1]);
 						return;
 					}
