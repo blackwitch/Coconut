@@ -23,6 +23,29 @@ var appSrv = express();
 var upload_server_list = '';
 var upload_target_path = '';
 
+
+//////////////////////////////////
+//	Coconut Manager plugin 
+var path = require('path');
+var architect = require("architect");
+var plugin_configPath = path.join(__dirname, "./plugins.js");
+if(fs.existsSync( plugin_configPath))
+{
+	var plugin_config = architect.loadConfig(plugin_configPath);
+
+	architect.createApp(plugin_config, function (err, app) {
+	  if (err){
+	  	console.log("plugin Error >>" + err);	
+	  }else{
+	  	console.log("Loading complete plugins !");	
+	  }
+	  
+	});
+}else{
+	console.log("Failed to load plugins. Check the file 'plugins.js' !");	
+}
+//	Coconut Agent Manager 
+//////////////////////////////////
 /////////////////////////////////////////////////
 //	WAS for Monitor
 appSrv.use(bodyParser.json());

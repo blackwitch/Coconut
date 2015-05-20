@@ -1,0 +1,12 @@
+{
+    "name": "Alarm Sample",
+    "version": "0.1",
+    "main": "alarmSample.js",
+    "private": true,
+
+ "dependencies": {
+	"node-schedule": "0.1.16"
+  },
+  "author": "ljh6341@gmail.com",
+  "license": "MIT"
+}
