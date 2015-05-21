@@ -1,5 +1,7 @@
 ##Chapter 11. Goal
 
+* 상세한 진행은 https://trello.com/b/LYG2yy6n/coconut 를 참고하세요.
+
 ###1차 목표
 1. 버그 수정 및 메뉴얼 정비 (complete)
 2. 2015년 5월 7일 정식 업데이트 (complete)
