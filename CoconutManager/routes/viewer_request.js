@@ -188,11 +188,25 @@ exports.modify_nick = function(req,res){
 	});
 };
 
+function isCorrectRemoteAddr(addr){
+	if( addr[0] == 'h' && addr[addr.length-1] != '/'){	//	http or https
+		//	http는 원격 저장소의 폴더와 싱크할 수 없음.
+		return false;
+	}
+
+	return true;
+}
+
 exports.dist_repo_update = function(req,res){
 	res.setHeader('Access-Control-Allow-Origin','*');
 	
 	if(req.body.servers === undefined || req.body.servers.length == 0){
 		res.send( {'error':'-1', 'message':'no server'});
+		return;
+	}
+
+	if(isCorrectRemoteAddr( req.body.dist_repo_path ) ){
+		res.send( {'error':'-1', 'message':"You can't sync http addr."});
 		return;
 	}
 	

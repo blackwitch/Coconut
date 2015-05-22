@@ -1012,9 +1012,12 @@ $(document).ready(function() {
 				console.log('error : ' + res.errlist.length);
 				if(res.errlist.length){
 					console.log('sync error server list : ' + res.errlist);
+					alert('sync error server list : ' + res.errlist);
 				}
 			}else{
-				console.log( 'patch error : ' + res.error);				
+				console.log( 'patch error : ' + res.message);	
+				alert(res.message);
+				UploadedSize = AllSize;
 			}
 		  });
 		  AllSize = checked_srv_list.length;

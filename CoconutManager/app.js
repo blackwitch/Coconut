@@ -44,7 +44,7 @@ if(fs.existsSync( plugin_configPath))
 }else{
 	console.log("Failed to load plugins. Check the file 'plugins.js' !");	
 }
-//	Coconut Agent Manager 
+//	Coconut Manager Manager 
 //////////////////////////////////
 /////////////////////////////////////////////////
 //	WAS for Monitor
@@ -152,6 +152,10 @@ var path = require('path');
 
 io.sockets.on('connection', function(socket){
 	ss(socket).on('file', function(stream,data){
+		if(false == fs.existsSync( './files/') ){
+			fs.mkdirSync( './files/');
+		}
+
 		var fn = './files/' + path.basename(data.name);
 		console.log("save file on " + fn);
 		stream.pipe(fs.createWriteStream(fn));
