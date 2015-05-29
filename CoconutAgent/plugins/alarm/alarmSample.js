@@ -5,7 +5,7 @@ var pb = require('pushbullet');
 var pusher = new pb('INPUT-Your-PushBullet-Access-KEY');
 
 var tsRule0 = new scheduler.RecurrenceRule();
-tsRule0.second = 0;	//	send system info per 1min
+tsRule0.second = 0;	//	send a test message by pushbullet when the second is 0.
 scheduler.scheduleJob(tsRule0, function(){
 	
 	pusher.devices(function(error, response){
