@@ -13,7 +13,8 @@ Service Operating System
  - 서비스를 위한 운영되는 자신의 프로세스를 모니터링 할 때
 
 **쉽게 플러그인을 제작 할 수 있습니다. 이를 통해 당신의 제품과 원하는데로 연동하세요.**
-
+ - CoconutAgent의 "plugins/alarm"의 코드를 확인하세요. 스케쥴링, plug-in, pushbullet(https://www.pushbullet.com)을 활용하는 방법을 확인할 수 있습니다.
+ 
 **Agent와 중앙 관리 시스템, 그리고 툴을 제공하며, 주요 기능은 아래와 같습니다.**
 
 ![툴 화면 구성](Document/Manual/resource/coconut.png)
