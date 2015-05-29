@@ -1,4 +1,4 @@
-# Coconut v0.5
+# Coconut v0.5.1
 
 Service Operating System
 
@@ -30,3 +30,16 @@ Service Operating System
 
 
 * 개발 진행은 https://trello.com/b/LYG2yy6n/coconut 에서 확인 가능합니다.
+
+**Release Note**
+
+**[2015/05/22] Ver 0.5.1 - 버그 수정**
+- Manager에서 파일 전송 받을 때 files 폴더 생성 안되서 죽는 버그 수정
+- 원격 저장소와 동기화 시 http 주소를 입력한 경우, 원격지 서버에 "repoList.json"파일이 없어 죽는 문제 수정 (파일명을 직접 명시한 경우는 문제되지 않음.)
+
+**[2015/05/20] Ver 0.5.0 - 플러그인 시스템 도입**
+- 플러그인 시스템 도입 npm "archtect" 
+- 플러그인, pushbullet 활용 샘플 "alarm" 추가 (in CoconutAgent/plugins/alarm)
+- 관련 메뉴얼 내용 추가
+
+
