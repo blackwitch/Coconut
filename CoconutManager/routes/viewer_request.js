@@ -212,7 +212,6 @@ exports.dist_repo_update = function(req,res){
 					console.log('connect error ip : ' + client.host);
 				}
 				errlist.push(client.host);
-				
 			}else{
 				succlist.push(client.host);
 			}

@@ -1009,7 +1009,7 @@ $(document).ready(function() {
   		  $.post(ipAPI+"/dist_repo_update", post_data).done(function(res) {
 			if(res.error === undefined){
 				UploadedSize = res.succlist.length + res.errlist.length;
-				console.log('error : ' + res.errlist.length);
+				console.log('result: ' + res.ret);
 				if(res.errlist.length){
 					console.log('sync error server list : ' + res.errlist);
 					alert('sync error server list : ' + res.errlist);

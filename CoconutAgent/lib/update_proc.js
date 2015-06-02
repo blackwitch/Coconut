@@ -20,37 +20,43 @@ function downloadRemoteFile(saveFn,remote_addr,cb){
 	});
 }
 
-function mkdir(tarDir, where, remote_where, isAll, ret){
+function mkdir(tarDir, where, remote_where, isAll){
+	var ret = '';
 	for(var r in where){
 		var tar = tarDir+'/'+where[r].name;
-		if(where[r].size == undefined){	//	this is a folder
-			if(false == fs.existsSync( tar) ){
-				fs.mkdirSync( tar);
-			}
-			if(where[r].folder != undefined ){
-				mkdir(tar, where[r].folder, remote_where+'/'+where[r].name,isAll, ret);
-			}
-		}else {	//	this is a file
-			if(true == fs.existsSync( tar) ){
-				var stat = fs.statSync(tar);
-				if( isAll== 1 || stat.size  !=  where[r].size){
-					downloadRemoteFile(tar, remote_where+'/' + where[r].name, function(res){
-						ret += '\r\n >>>>>>>>>>> ' + res;	//	Currently, this code is no meaning.
-					});
+		try{
+			if(where[r].size == undefined){	//	this is a folder
+				if(false == fs.existsSync( tar) ){
+					fs.mkdirSync( tar);
 				}
-			}else{
-				downloadRemoteFile(tar, remote_where+'/' + where[r].name, function(res){
-						ret += '\r\n >>>>>>>>>>> ' + res;	//	Currently, this code is no meaning.
-					});
+				if(where[r].folder != undefined ){
+					ret += mkdir(tar, where[r].folder, remote_where+'/'+where[r].name,isAll);
+				}
+			}else {	//	this is a file
+				if(true == fs.existsSync( tar) ){
+					var stat = fs.statSync(tar);
+					if( isAll== 1 || stat.size  !=  where[r].size){
+						downloadRemoteFile(tar, remote_where+'/' + where[r].name, function(err,res){
+							ret += '\r\n >>>>>>>>>>> ' + res;	//	Currently, this code is no meaning.
+						});
+					}
+				}else{
+					downloadRemoteFile(tar, remote_where+'/' + where[r].name, function(err,res){
+							ret += '\r\n >>>>>>>>>>> ' + res;	//	Currently, this code is no meaning.
+						});
+				}
 			}
+		}catch(err){
+			ret += '\r\n >>>>>>>>' + err;
 		}
 	}
+
+	console.log( 'ret >> '+ ret);
+	return ret;
 }
 
 function makeDir(tarDir, where,remote_where, isAll, cb){
-	var ret ='';
-	mkdir(tarDir, where,remote_where, isAll, ret);
-	return cb(ret);
+	return cb( mkdir(tarDir, where,remote_where, isAll) );
 }
 
 function isRemoteFile(addr){
@@ -58,6 +64,13 @@ function isRemoteFile(addr){
 		return false;
 	}
 	return true;
+}
+
+function checkURL(_addr, cb){
+	downloadRemoteFile("./test.txt" , _addr, function (err,data){
+		fs.unlink("./test.txt");
+		cb(err,data);
+	});
 }
 
 exports.download = function(para, callback){
@@ -80,24 +93,41 @@ exports.download = function(para, callback){
 		var fn = para[1].split(/[\/]+/);
 		var saveFn = para[0] + '/' + fn[ fn.length-1];
 
-		downloadRemoteFile(saveFn , para[1], function (data){
-			callback(null, {'ret' : data});
+		downloadRemoteFile(saveFn , para[1], function (err, data){
+			callback(err, {'ret' : data});
 		});
 	}else{
-		http.get(para[1] + 'repoList.json').on('response',function(res){
-			var body = '';
-			var i=0;
-			res.on('data', function(chunk){
-				i++;
-				body += chunk;
-			});
-			res.on('end',function(){
-				var repoList = JSON.parse( body);
-				makeDir( para[0], repoList, para[1], para[2], function(ret){
-					callback(null, {'ret' : ret});
-					console.log( 'repos sync finished!!' );
+		var url  = para[1];
+		checkURL(url, function(err,resp){
+			if(resp.ret != 0 )
+			{
+				console.log( "remote sync error : code" + resp.ret);
+				callback(null, {'error':'error code [' + resp.ret + ']'});
+			}else{
+				http.get(url + 'repoList.json').on('response',function(res){
+					var body = '';
+					var i=0;
+					res.on('data', function(chunk){
+						i++;
+						body += chunk;
+					});
+					res.on('end',function(){
+						if(body[0] == '[' && body[1] == '{')
+						{
+							var repoList = JSON.parse( body);
+							makeDir( para[0], repoList, para[1], para[2], function(ret){
+								if( ret.indexOf('Error') > 0 )
+									callback(ret, {'ret' : ret});
+								else
+									callback(null, {'ret' : ret});
+							});
+						}else{
+							console.log('There is no repoList.json file!');
+							callback('There is no repoList.json file!', {'ret' : 'There is no repoList.json file!'});
+						}
+					});
 				});
-			});
+			}
 		});
 	}
 }
