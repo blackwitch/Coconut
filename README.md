@@ -33,13 +33,20 @@ Service Operating System
 
 **Release Note**
 
-**[2015/05/22] Ver 0.5.1 - 버그 수정**
-- Manager에서 파일 전송 받을 때 files 폴더 생성 안되서 죽는 버그 수정
-- 원격 저장소와 동기화 시 http 주소를 입력한 경우, 원격지 서버에 "repoList.json"파일이 없어 죽는 문제 수정 (파일명을 직접 명시한 경우는 문제되지 않음.)
+**[Ver 0.5.1]**
 
-**[2015/05/20] Ver 0.5.0 - 플러그인 시스템 도입**
-- 플러그인 시스템 도입 npm "archtect" 
-- 플러그인, pushbullet 활용 샘플 "alarm" 추가 (in CoconutAgent/plugins/alarm)
-- 관련 메뉴얼 내용 추가
+* [2015/06/02] - 버그 수정
+** 동기화 처리 시 잘못된 주소를 입력하면 agent가 다운되는 버그 수정
+
+* [2015/05/22] - 버그 수정
+** Manager에서 파일 전송 받을 때 files 폴더 생성 안되서 죽는 버그 수정
+** 원격 저장소와 동기화 시 http 주소를 입력한 경우, 원격지 서버에 "repoList.json"파일이 없어 죽는 문제 수정 (파일명을 직접 명시한 경우는 문제되지 않음.)
+
+**[Ver 0.5.0]**
+
+* [2015/05/20]  - 플러그인 시스템 도입
+** 플러그인 시스템 도입 npm "archtect" 
+** 플러그인, pushbullet 활용 샘플 "alarm" 추가 (in CoconutAgent/plugins/alarm)
+** 관련 메뉴얼 내용 추가
 
 
