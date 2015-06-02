@@ -42,6 +42,42 @@ var app = express();
 
 proc.handshake();
 
+var tsRule0 = new scheduler.RecurrenceRule();
+tsRule0.second = 0;	//	send system info per 1min
+scheduler.scheduleJob(tsRule0, function(){
+	proc.updateSystemInfo();
+});
+
+var tsRule10 = new scheduler.RecurrenceRule();
+tsRule10.second = 10;	//	send system info per 1min
+scheduler.scheduleJob(tsRule10, function(){
+	proc.updateSystemInfo();
+});
+
+var tsRule20 = new scheduler.RecurrenceRule();
+tsRule20.second = 20;	//	send system info per 1min
+scheduler.scheduleJob(tsRule20, function(){
+	proc.updateSystemInfo();
+});
+
+var tsRule30 = new scheduler.RecurrenceRule();
+tsRule30.second = 30;	//	send system info per 1min
+scheduler.scheduleJob(tsRule30, function(){
+	proc.updateSystemInfo();
+});
+
+var tsRule40 = new scheduler.RecurrenceRule();
+tsRule40.second = 40;	//	send system info per 1min
+scheduler.scheduleJob(tsRule40, function(){
+	proc.updateSystemInfo();
+});
+
+var tsRule50 = new scheduler.RecurrenceRule();
+tsRule50.second = 50;	//	send system info per 1min
+scheduler.scheduleJob(tsRule50, function(){
+	proc.updateSystemInfo();
+});
+
 
 /////////////////////////////////////////////////////
 // Create a server object with options 
