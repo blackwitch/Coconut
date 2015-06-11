@@ -246,6 +246,7 @@ var ipManager = "localhost";
 var ipFileUpload ="http://" + ipManager + ":38250" ;
 var ipAPI ="http://" + ipManager + ":38443";
 var ipTerminal = "http://" + ipManager + ":38150";
+var socketFileUpload = io.connect(ipFileUpload);
 
 var target_path_list = [	//자주 사용하는 경로는 이곳에 미리 넣어두셔도 됩니다. 추후 이 정보는 redis에 저장되도록 할 예정입니다.
   "/var",
@@ -1068,7 +1069,6 @@ $(document).ready(function() {
 					//	connect ft server to mng, and next, the mng will send this file to the servers that you selected.
 					AllSize = fn.size;
 					UploadedSize = 0;
-					var socket = io.connect(ipFileUpload);
 					var stream = ss.createStream();
 					ss(socket).emit('file', stream, {path: tarpath, name: fn.name, size: fn.size});
 					var blobstream = ss.createBlobReadStream(fn);
@@ -1076,7 +1076,7 @@ $(document).ready(function() {
 						UploadedSize += chunk.length;
 						if(UploadedSize >= AllSize)
 						{
-							socket.emit('done', {path: tarpath, name: fn.name, size: fn.size});
+							socketFileUpload.emit('done', {path: tarpath, name: fn.name, size: fn.size});
 						}
 					});
 					blobstream.pipe( stream );

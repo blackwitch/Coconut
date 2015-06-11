@@ -1,5 +1,6 @@
 var redis = require('redis');
 var cfg = require('../config');
+var redis_cli = redis.createClient(cfg.getPortRedis(),cfg.getIpRedis());
 
 exports.agtRecv_HandShake = function(req,res){
 	
@@ -15,12 +16,10 @@ exports.agtRecv_HandShake = function(req,res){
 		return;
 	}
 	var uid = req.body.uid;
-	var redis_cli = redis.createClient(cfg.getPortRedis(),cfg.getIpRedis());
 	redis_cli.exists(uid,function(err,reply){
 		if(err){
 			console.log(err);
 			res.send( {'error':'application error -1025'});
-			redis_cli.quit(function(err,res){});
 			return;
 		}
 
@@ -29,7 +28,6 @@ exports.agtRecv_HandShake = function(req,res){
 				if(err){
 					console.log(err);
 					res.send( {'error':'application error -1026'});
-					redis_cli.quit(function(err,resp){});
 					return;
 				}else{
 					//	save info
@@ -53,7 +51,6 @@ exports.agtRecv_HandShake = function(req,res){
 					redis_cli.hset(uid, "net_send", 'net_send');
 					
 					res.send( {'error':'0'});
-					redis_cli.quit(function(err,resp){});
 				}
 			});
 		}else{
@@ -88,12 +85,10 @@ exports.agtRecv_UpdateInfo = function(req,res){
 	){
 		console.log(err);
 		res.send( {'error':'application error -1027'});
-		redis_cli.quit(function(err,reply){});
 		return;
 	}
 	
 	var uid = req.body.uid;
-	var redis_cli = redis.createClient(cfg.getPortRedis(),cfg.getIpRedis());
 
 	redis_cli.hset(uid, "uptime", req.body.uptime);
 	redis_cli.hset(uid, "freemem", req.body.freemem);

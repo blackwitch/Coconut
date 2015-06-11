@@ -1,5 +1,4 @@
 var child_proc = require('child_process');
-var redis = require('redis');
 var rpcForCli = require('json-rpc2');
 var cfg = require('../config');
 

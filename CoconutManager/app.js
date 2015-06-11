@@ -8,7 +8,6 @@ var fs = require('fs');
 var express = require('express');
 var bodyParser = require('body-parser');
 var scheduler = require('node-schedule');
-var redis = require('redis');
 var rpc = require('json-rpc2');
 var url = require('url');
 
