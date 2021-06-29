@@ -11,7 +11,7 @@
 	"MD5": "1.2.1",
 	"node-gyp": "1.0.2",
 	"node-schedule": "0.1.16",
-	"socket.io": "1.3.5",
+	"socket.io": ">=2.4.0"
 	"socket.io-client": "1.3.5",
 	"socket.io-stream": "0.6.1",
   "architect":  "0.1.11",
